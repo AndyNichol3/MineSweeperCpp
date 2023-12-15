@@ -18,7 +18,7 @@ using namespace std;
 
 // functions
 void printGameWelcome();
-int initalizeGameBoard(vector<vector<int>> &gameBoard,
+void initalizeGameBoard(vector<vector<int>> &gameBoard,
                        vector<vector<bool>> &boolGameBoard, int revealTally,
                        int kRows, int kCollums);
 void fillWithMines(vector<vector<int>> &gameBoard, int userStartRow,
@@ -36,6 +36,7 @@ void recursiveRevealExplosion(vector<vector<int>> &gameBoard,
                               int Y);
 void printGameRules();
 int getUserDifficulty();
+
 
 int main() {
 
@@ -78,8 +79,8 @@ int main() {
   int revealTally = 0;
   int round = 1;
 
-  revealTally = initalizeGameBoard(gameBoard, boolGameBoard, revealTally, kRows,
-                                   kCollums);
+
+ initalizeGameBoard(gameBoard, boolGameBoard, revealTally, kRows, kCollums);
   printBoolBoard(boolGameBoard, gameBoard);
   cout << endl;
 
@@ -163,7 +164,15 @@ int main() {
       if (gameBoard[userRow][userCol] == 0) {
         recursiveRevealExplosion(gameBoard, boolGameBoard, userRow, userCol);
       }
-      revealTally++;
+      //revealTally++;
+    }
+    revealTally = 0;
+    for (int i = 0; i < 9; i++) {
+      for (int j = 0; j < 9; j++) {
+        if (boolGameBoard[i][j]) {
+          revealTally++;
+        }
+      }
     }
 
     if (revealTally == maxDisplay) {
@@ -308,7 +317,7 @@ void fillWithInts(vector<vector<int>> &gameBoard) {
     }
   }
 }
-int initalizeGameBoard(vector<vector<int>> &gameBoard,
+void initalizeGameBoard(vector<vector<int>> &gameBoard,
                        vector<vector<bool>> &boolGameBoard, int revealTally,
                        int kRows, int kCollums) {
 
@@ -318,16 +327,6 @@ int initalizeGameBoard(vector<vector<int>> &gameBoard,
   cout << WHITE << "_____________________________________\n" << endl;
   cout << RED << "                ROUND 1" << endl;
   cout << WHITE << "_____________________________________\n" << RESET << endl;
-
-  /*
-  cout << "\nEnter Starting Point: ";
-  int userStartRow = -1;
-  int userStartCol = -1;
-  cout << "\nX (0-8): ";
-  cin >> userStartCol;
-  cout << "Y (0-8): ";
-  cin >> userStartRow;
-*/
 
   int userStartRow = -2, userStartCol = -2;
   bool validInput = false;
@@ -376,7 +375,7 @@ int initalizeGameBoard(vector<vector<int>> &gameBoard,
 
   recursiveRevealExplosion(gameBoard, boolGameBoard, userStartRow,
                            userStartCol);
-
+/*
   for (int i = 0; i < 9; i++) {
     for (int j = 0; j < 9; j++) {
       if (boolGameBoard[i][j]) {
@@ -385,7 +384,8 @@ int initalizeGameBoard(vector<vector<int>> &gameBoard,
     }
   }
 
-  return revealTally;
+ // return revealTally;
+  */
 }
 
 void recursiveRevealExplosion(vector<vector<int>> &gameBoard,
