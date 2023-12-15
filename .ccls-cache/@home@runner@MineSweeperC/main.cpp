@@ -41,6 +41,7 @@ int main() {
   int gameBoard[9][9];
   bool boolGameBoard[9][9];
   int revealTally = 0;
+  int round = 1; 
 
   revealTally = initalizeGameBoard(gameBoard, boolGameBoard, revealTally);
   printBoolBoard(boolGameBoard, gameBoard);
@@ -51,11 +52,17 @@ int main() {
 
   while (gameOver == false) {
 
+    round ++;
+
+    cout <<WHITE<< "_____________________________________\n" << endl;
+    cout << RED << "                ROUND " << round << endl;
+     cout <<WHITE<<"_____________________________________\n" << RESET<<endl;
+
     int userX = 0, userY = 0;
-    cout << "enter coordinates: " << endl;
-    cout << "x: ";
+    cout << "Enter Next Point: " << endl;
+    cout << "X (0-8): ";
     cin >> userX;
-    cout << "y: ";
+    cout << "Y (0-8): ";
     cin >> userY;
 
     // add condition to make sure within bounds
@@ -67,6 +74,7 @@ int main() {
 
     } else {
       boolGameBoard[userX][userY] = true;
+      recursiveRevealExplosion(gameBoard, boolGameBoard, userX, userY);
       revealTally++;
     }
 
@@ -85,6 +93,22 @@ int main() {
   }
 }
 
+/*
+void printBoolBoard(bool boolGameBoard[9][9], int gameBoard[9][9]) {
+  // cout << right << setw(3) << " ";
+  for (int i = 0; i < 9; i++) {
+    for (int j = 0; j < 9; j++) {
+      if (boolGameBoard[i][j] == true) {
+        cout << right << setw(3) << gameBoard[i][j];
+      } else {
+        cout << right << setw(3) << "_";
+      }
+    }
+    cout << endl;
+  }
+}
+*/
+
 void printBoolBoard(bool boolGameBoard[9][9], int gameBoard[9][9]) {
     // Print column labels
     std::cout <<RED<< "   ";
@@ -101,7 +125,24 @@ void printBoolBoard(bool boolGameBoard[9][9], int gameBoard[9][9]) {
         std::cout<< RED << std::setw(2) << i << " |"; // Row number
         for (int j = 0; j < 9; ++j) {
             if (boolGameBoard[i][j]) {
-                std::cout << WHITE<< std::setw(3) << gameBoard[i][j]; // Revealed cell value  
+              switch (gameBoard[i][j]) {
+               // std::cout << WHITE<< std::setw(3) << gameBoard[i][j]; 
+                case 0:
+                   std::cout << WHITE<< std::setw(3) << gameBoard[i][j];
+                  break;
+                case 1: 
+                  std::cout << BLUE<< std::setw(3) << gameBoard[i][j];
+                   break; 
+                case 2:
+                    std::cout << GREEN<< std::setw(3) << gameBoard[i][j];
+                    break; 
+                case 3: 
+                    std::cout << RED<< std::setw(3) << gameBoard[i][j];
+                    break;
+                default:
+                  std::cout << RED << std::setw(3) << gameBoard[i][j];
+                 break;
+              }
             } else {
                 std::cout<< WHITE << std::setw(3) << "-"; // Unrevealed cell
             }
@@ -130,7 +171,7 @@ void printRules() {
     } else if (userStartGame == 2) {
 
       cout << "Here we go! \n" << endl;
-      cout << "-------------------------------------\n" << endl;
+      //cout << "-------------------------------------\n" << endl;
       startGame = true;
       break;
     } else {
@@ -226,6 +267,10 @@ int initalizeGameBoard(int gameBoard[9][9], bool boolGameBoard[9][9],
   // get coords
   zeroGameBoard(gameBoard, boolGameBoard);
   printBoolBoard(boolGameBoard, gameBoard);
+
+  cout <<WHITE<< "_____________________________________\n" << endl;
+  cout << RED << "                ROUND 1"  << endl;
+   cout <<WHITE<<"_____________________________________\n" << RESET<<endl;
 
   cout << "\nEnter Starting Point: ";
   int userStartX = -1;
