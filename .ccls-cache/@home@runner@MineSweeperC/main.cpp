@@ -5,6 +5,7 @@
 #include <iomanip>
 #include <iostream>
 #include <vector>
+#include <limits>
 
 // custom color values
 #define RESET "\033[0m"
@@ -35,7 +36,6 @@ void recursiveRevealExplosion(vector<vector<int>> &gameBoard,
 void printGameRules();
 int getUserDifficulty();
 
-
 int main() {
 
   printGameWelcome();
@@ -65,7 +65,6 @@ int main() {
   }
   }
 
-  
   displaySubtract = kRows - 1;
   int maxDisplay = kRows * kCollums;
 
@@ -93,16 +92,47 @@ int main() {
     cout << RED << "                ROUND " << round << endl;
     cout << WHITE << "_____________________________________\n" << RESET << endl;
 
-    int userRow = 0, userCol = 0;
-    cout << "Enter Next Point (-1 to exit): " << endl;
-    cout << "X (0-8): ";
-    cin >> userCol;
-    if (userCol == -1) {
-      exit(0);
+    int userRow = -2, userCol = -2;
+    bool validInput = false;
+
+    while (!validInput) {
+      cout << "Enter Next Point (-1 to exit): " << endl;
+      cout << "X (0-8): ";
+      if (!(cin >> userCol)) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+      } else if (userCol > kCollums || userCol < -1) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+      } else {
+        if (userCol == -1) {
+          exit(0);
+        }
+        validInput = true;
+      }
+    }
+    validInput = false;
+
+    while (!validInput) {
+      cout << "Enter Next Point (-1 to exit): " << endl;
+      cout << "Y (0-8): ";
+      if (!(cin >> userRow)) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+      } else if (userRow > kRows || userRow < 0) {
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+      } else {
+        validInput = true;
+      }
     }
     
-    cout << "Y (0-8): ";
-    cin >> userRow;
+   // cout << "Y (0-8): ";
+    // cin >> userRow;
+
+
+
+    
     // adujust user input based on board size
     userRow = displaySubtract - userRow;
 
@@ -139,19 +169,14 @@ int main() {
 void printBoolBoard(const vector<vector<bool>> &boolGameBoard,
                     const vector<vector<int>> &gameBoard) {
 
-
-  // Print separator bar
   cout << endl;
   std::cout << RED << "   +----------------------------+" << std::endl;
 
-  // Print rows with labels and game board contents
-
   for (int i = 0; i < 9; ++i) {
-    std::cout << RED << std::setw(2) << 8 - i << " |"; // Row number
+    std::cout << RED << std::setw(2) << 8 - i << " |";
     for (int j = 0; j < 9; ++j) {
       if (boolGameBoard[i][j]) {
         switch (gameBoard[i][j]) {
-          // std::cout << WHITE<< std::setw(3) << gameBoard[i][j];
         case 0:
           std::cout << WHITE << std::setw(3) << gameBoard[i][j];
           break;
@@ -169,18 +194,16 @@ void printBoolBoard(const vector<vector<bool>> &boolGameBoard,
           break;
         }
       } else {
-        std::cout << WHITE << std::setw(3) << "-"; // Unrevealed cell
+        std::cout << WHITE << std::setw(3) << "-";
       }
     }
     std::cout << RED << " |" << std::endl;
   }
 
-  // Print separator bar
-
   std::cout << RED << "   +----------------------------+" << RESET << std::endl;
   std::cout << RED << "    ";
   for (int i = 0; i < 9; ++i) {
-    std::cout << RED << std::setw(3) << i; // Column numbers
+    std::cout << RED << std::setw(3) << i;
   }
   std::cout << std::endl;
 }
@@ -231,6 +254,7 @@ void fillWithMines(vector<vector<int>> &gameBoard, int userStartRow,
     }
   }
 }
+
 void zeroGameBoard(vector<vector<int>> &gameBoard,
                    vector<vector<bool>> &boolGameBoard) {
   // fill baord with 0
@@ -241,6 +265,7 @@ void zeroGameBoard(vector<vector<int>> &gameBoard,
     }
   }
 }
+
 void calcGameBoardInts(vector<vector<int>> &gameBoard, int x, int y) {
   int defIndexX[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
   int defIndexY[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
@@ -257,6 +282,7 @@ void calcGameBoardInts(vector<vector<int>> &gameBoard, int x, int y) {
     }
   }
 }
+
 void fillWithInts(vector<vector<int>> &gameBoard) {
   for (int i = 0; i < 9; i++) {
     for (int j = 0; j < 9; j++) {
@@ -270,7 +296,6 @@ void fillWithInts(vector<vector<int>> &gameBoard) {
 int initalizeGameBoard(vector<vector<int>> &gameBoard,
                        vector<vector<bool>> &boolGameBoard, int revealTally) {
 
-  // get coords
   zeroGameBoard(gameBoard, boolGameBoard);
   printBoolBoard(boolGameBoard, gameBoard);
 
@@ -288,17 +313,10 @@ int initalizeGameBoard(vector<vector<int>> &gameBoard,
   userStartRow = 8 - userStartRow;
   cout << endl;
 
-  // initalize game board
-  // cout << "zeroing game board" << endl;
-
-  // gameBoard[userStartRow][userStartCol] = -2;
   boolGameBoard[userStartRow][userStartCol] = true;
 
-  // fill game board with mines
-  // cout << "filling game board with mines" << endl;
   fillWithMines(gameBoard, userStartRow, userStartCol);
 
-  // cout << "calculating baord" << endl;
   fillWithInts(gameBoard);
 
   recursiveRevealExplosion(gameBoard, boolGameBoard, userStartRow,
@@ -359,7 +377,7 @@ void printGameWelcome() {
       break;
     } else {
       //  cout << "invalid input" << endl;
-      std::cout << "\nInvalid input. Please try again.\n" << std::endl;
+      // std::cout << "\nInvalid input. Please try again.\n" << std::endl;
       std::cin.clear(); // Clear error flags
       std::cin.ignore();
     }
@@ -371,14 +389,13 @@ void printGameRules() {
 
 int getUserDifficulty() {
   int difficulty = 0;
-  while(difficulty != 1 && difficulty != 2 && difficulty != 3) {
-  cin.clear();
-  cin.ignore(); 
-  cout << endl;
-  cout << "Chose Your Difficulty: " << endl;
-  cout << "1. Easy    2. Medium    3. Hard" << endl;
-  cin >> difficulty;
-  
+  while (difficulty != 1 && difficulty != 2 && difficulty != 3) {
+    cin.clear();
+    cin.ignore();
+    cout << endl;
+    cout << "Chose Your Difficulty: " << endl;
+    cout << "1. Easy    2. Medium    3. Hard" << endl;
+    cin >> difficulty;
   }
   return difficulty;
 }
