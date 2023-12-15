@@ -112,7 +112,7 @@ int main() {
         if (!(cin >> userCol)) {
           cin.clear();
           cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        } else if (userCol > kCollums || userCol < -1) {
+        } else if (userCol >= kCollums || userCol < -1) {
           cin.clear();
           cin.ignore(numeric_limits<streamsize>::max(), '\n');
         } else {
@@ -130,7 +130,7 @@ int main() {
         if (!(cin >> userRow)) {
           cin.clear();
           cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        } else if (userRow > kRows || userRow < 0) {
+        } else if (userRow >= kRows || userRow < 0) {
           cin.clear();
           cin.ignore(numeric_limits<streamsize>::max(), '\n');
         } else {
@@ -200,6 +200,7 @@ void printBoolBoard(const vector<vector<bool>> &boolGameBoard,
     std::cout << RED << std::setw(2) << 8 - i << " |";
     for (int j = 0; j < 9; ++j) {
       if (boolGameBoard[i][j]) {
+        
         switch (gameBoard[i][j]) {
         case 0:
           std::cout << WHITE << std::setw(3) << gameBoard[i][j];
@@ -339,7 +340,7 @@ void initalizeGameBoard(vector<vector<int>> &gameBoard,
     if (!(cin >> userStartCol)) {
       cin.clear();
       cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    } else if (userStartCol > kCollums || userStartCol < -1) {
+    } else if (userStartCol >= kCollums || userStartCol < -1) {
       cin.clear();
       cin.ignore(numeric_limits<streamsize>::max(), '\n');
     } else {
@@ -356,7 +357,7 @@ void initalizeGameBoard(vector<vector<int>> &gameBoard,
     if (!(cin >> userStartRow)) {
       cin.clear();
       cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    } else if (userStartRow > kRows || userStartRow < 0) {
+    } else if (userStartRow >= kRows || userStartRow < 0) {
       cin.clear();
       cin.ignore(numeric_limits<streamsize>::max(), '\n');
     } else {
