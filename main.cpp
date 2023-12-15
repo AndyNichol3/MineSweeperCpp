@@ -8,8 +8,8 @@
 using namespace std;
 
 void printRules();
-void initalizeGameBoard(int gameBoard[9][9], bool boolGameBoard[9][9],
-                        int revealTally);
+int initalizeGameBoard(int gameBoard[9][9], bool boolGameBoard[9][9],
+                       int revealTally);
 void fillWithMines(int gameBoard[9][9], int userStartX, int userStartY);
 void printGameBoardTesting(int gameBoard[9][9], bool boolGameBoard[9][9]);
 void fillWithInts(int gameBoard[9][9]);
@@ -19,9 +19,12 @@ void zeroGameBoard(int gameBoard[9][9], bool boolGameBoard[9][9]);
 void recursiveRevealExplosion(int gameBoard[9][9], bool boolGameBoard[9][9],
                               int X, int Y);
 
+
+
 int main() {
 
   bool gameOver = false;
+  bool win = false;
 
   printRules();
 
@@ -29,16 +32,48 @@ int main() {
   bool boolGameBoard[9][9];
   int revealTally = 0;
 
-  initalizeGameBoard(gameBoard, boolGameBoard, revealTally);
+  revealTally = initalizeGameBoard(gameBoard, boolGameBoard, revealTally);
   printBoolBoard(boolGameBoard, gameBoard);
   cout << endl;
 
-  printGameBoardTesting(gameBoard, boolGameBoard);
+  // printGameBoardTesting(gameBoard, boolGameBoard);
+  // cout << endl << revealTally << endl;
 
-  // while(gameOver == false){
+  while (gameOver == false) {
 
-  //
+    int userX = 0, userY = 0;
+    cout << "enter coordinates: " << endl;
+    cout << "x: ";
+    cin >> userX;
+    cout << "y: ";
+    cin >> userY;
+
+    // add condition to make sure within bounds
+
+    if (gameBoard[userX][userY] == -1) {
+      gameOver = true;
+      cout << "you hit a mine!" << endl;
+
+    } else {
+      boolGameBoard[userX][userY] = true;
+      revealTally++;
+    }
+
+    if (revealTally == 81) {
+      gameOver = true;
+      win = true;
+    }
+
+    printBoolBoard(boolGameBoard, gameBoard);
+  }
+
+  if (win == true) {
+    cout << "you win!" << endl;
+  } else {
+    cout << "you lose!" << endl;
+  }
 }
+
 
 void printBoolBoard(bool boolGameBoard[9][9], int gameBoard[9][9]) {
   // cout << right << setw(3) << " ";
@@ -152,8 +187,8 @@ void fillWithInts(int gameBoard[9][9]) {
     }
   }
 }
-void initalizeGameBoard(int gameBoard[9][9], bool boolGameBoard[9][9],
-                        int revealTally) {
+int initalizeGameBoard(int gameBoard[9][9], bool boolGameBoard[9][9],
+                       int revealTally) {
 
   // get coords
 
@@ -188,6 +223,8 @@ void initalizeGameBoard(int gameBoard[9][9], bool boolGameBoard[9][9],
       }
     }
   }
+
+  return revealTally;
 }
 
 void recursiveRevealExplosion(int gameBoard[9][9], bool boolGameBoard[9][9],
@@ -210,4 +247,3 @@ void recursiveRevealExplosion(int gameBoard[9][9], bool boolGameBoard[9][9],
     }
   }
 }
-
