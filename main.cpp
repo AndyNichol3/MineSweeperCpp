@@ -5,6 +5,15 @@
 #include <iomanip>
 #include <iostream>
 
+#define RESET   "\033[0m"
+#define RED     "\033[31m"
+#define GREEN   "\033[32m"
+#define YELLOW  "\033[33m"
+#define BLUE    "\033[34m"
+#define MAGENTA "\033[35m"
+#define CYAN    "\033[36m"
+#define WHITE   "\033[37m"
+
 using namespace std;
 
 void printRules();
@@ -18,6 +27,7 @@ void printBoolBoard(bool boolGameBoard[9][9], int gameBoard[9][9]);
 void zeroGameBoard(int gameBoard[9][9], bool boolGameBoard[9][9]);
 void recursiveRevealExplosion(int gameBoard[9][9], bool boolGameBoard[9][9],
                               int X, int Y);
+void printGameRules();
 
 
 
@@ -53,6 +63,7 @@ int main() {
     if (gameBoard[userX][userY] == -1) {
       gameOver = true;
       cout << "you hit a mine!" << endl;
+      boolGameBoard[userX][userY] = true;
 
     } else {
       boolGameBoard[userX][userY] = true;
@@ -74,37 +85,59 @@ int main() {
   }
 }
 
-
 void printBoolBoard(bool boolGameBoard[9][9], int gameBoard[9][9]) {
-  // cout << right << setw(3) << " ";
-  for (int i = 0; i < 9; i++) {
-    for (int j = 0; j < 9; j++) {
-      if (boolGameBoard[i][j] == true) {
-        cout << right << setw(3) << gameBoard[i][j];
-      } else {
-        cout << right << setw(3) << "_";
-      }
+    // Print column labels
+    std::cout <<RED<< "   ";
+    for (int i = 0; i < 9; ++i) {
+        std::cout << std::setw(3) << i; // Column numbers
     }
-    cout << endl;
-  }
+    std::cout << std::endl;
+
+    // Print separator bar
+    std::cout << "   +----------------------------+" << std::endl;
+
+    // Print rows with labels and game board contents
+    for (int i = 0; i < 9; ++i) {
+        std::cout<< RED << std::setw(2) << i << " |"; // Row number
+        for (int j = 0; j < 9; ++j) {
+            if (boolGameBoard[i][j]) {
+                std::cout << WHITE<< std::setw(3) << gameBoard[i][j]; // Revealed cell value  
+            } else {
+                std::cout<< WHITE << std::setw(3) << "-"; // Unrevealed cell
+            }
+        }
+        std::cout<<RED << " |" << std::endl;
+    }
+
+    // Print separator bar
+    std::cout << RED << "   +----------------------------+" <<RESET<< std::endl;
 }
+
 void printRules() {
-  cout << "Welcome to Minesweeper!" << endl;
+  cout <<RED<< "\n\n-------------------------------------" << endl;
+  cout <<WHITE<< "       Welcome to Minesweeper!       " << endl;
+  cout <<RED<< "-------------------------------------\n" <<RESET<< endl;
   bool startGame = false;
   while (startGame == false) {
 
-    cout << "press 1 for rules or 2 to start" << endl;
+    cout << "Press 1 For Rules or 2 To Start: " << endl;
     int userStartGame = 0;
     cin >> userStartGame;
     if (userStartGame == 1) {
       // add actual rules later
-      cout << "here are the rules " << endl;
+      cout << "Here are the Rules " << endl;
+      printGameRules();
     } else if (userStartGame == 2) {
-      cout << "here we go! " << endl;
+
+      cout << "Here we go! \n" << endl;
+      cout << "-------------------------------------\n" << endl;
       startGame = true;
       break;
     } else {
-      cout << "invalid input" << endl;
+    //  cout << "invalid input" << endl;
+      std::cout << "\nInvalid input. Please try again.\n" << std::endl;
+      std::cin.clear(); // Clear error flags
+      std::cin.ignore();
     }
   }
 }
@@ -191,27 +224,30 @@ int initalizeGameBoard(int gameBoard[9][9], bool boolGameBoard[9][9],
                        int revealTally) {
 
   // get coords
+  zeroGameBoard(gameBoard, boolGameBoard);
+  printBoolBoard(boolGameBoard, gameBoard);
 
-  cout << "\nenter starting coords: ";
+  cout << "\nEnter Starting Point: ";
   int userStartX = -1;
   int userStartY = -1;
-  cout << "\nenter x coord: ";
+  cout << "\nX (0-8): ";
   cin >> userStartX;
-  cout << "enter y coord: ";
+  cout << "Y (0-8): ";
   cin >> userStartY;
+  cout << endl; 
 
   // initalize game board
-  cout << "zeroing game board" << endl;
-  zeroGameBoard(gameBoard, boolGameBoard);
+  //cout << "zeroing game board" << endl;
+
 
   // gameBoard[userStartX][userStartY] = -2;
   boolGameBoard[userStartX][userStartY] = true;
 
   // fill game board with mines
-  cout << "filling game board with mines" << endl;
+  //cout << "filling game board with mines" << endl;
   fillWithMines(gameBoard, userStartX, userStartY);
 
-  cout << "calculating baord" << endl;
+ // cout << "calculating baord" << endl;
   fillWithInts(gameBoard);
 
   recursiveRevealExplosion(gameBoard, boolGameBoard, userStartX, userStartY);
@@ -246,4 +282,8 @@ void recursiveRevealExplosion(int gameBoard[9][9], bool boolGameBoard[9][9],
       }
     }
   }
+}
+
+void printGameRules(){
+  cout << endl <<"eventuall, we'll add rules later\n" << endl;
 }
