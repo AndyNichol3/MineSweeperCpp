@@ -8,13 +8,16 @@
 using namespace std;
 
 void printRules();
-void initalizeGameBoard(int gameBoard[9][9], bool boolGameBoard[9][9]);
+void initalizeGameBoard(int gameBoard[9][9], bool boolGameBoard[9][9],
+                        int revealTally);
 void fillWithMines(int gameBoard[9][9], int userStartX, int userStartY);
 void printGameBoardTesting(int gameBoard[9][9], bool boolGameBoard[9][9]);
 void fillWithInts(int gameBoard[9][9]);
 void calcGameBoardInts(int gameBoard[9][9], int x, int y);
 void printBoolBoard(bool boolGameBoard[9][9], int gameBoard[9][9]);
 void zeroGameBoard(int gameBoard[9][9], bool boolGameBoard[9][9]);
+void recursiveRevealExplosion(int gameBoard[9][9], bool boolGameBoard[9][9],
+                              int X, int Y);
 
 int main() {
 
@@ -24,8 +27,9 @@ int main() {
 
   int gameBoard[9][9];
   bool boolGameBoard[9][9];
+  int revealTally = 0;
 
-  initalizeGameBoard(gameBoard, boolGameBoard);
+  initalizeGameBoard(gameBoard, boolGameBoard, revealTally);
   printBoolBoard(boolGameBoard, gameBoard);
   cout << endl;
 
@@ -148,7 +152,8 @@ void fillWithInts(int gameBoard[9][9]) {
     }
   }
 }
-void initalizeGameBoard(int gameBoard[9][9], bool boolGameBoard[9][9]) {
+void initalizeGameBoard(int gameBoard[9][9], bool boolGameBoard[9][9],
+                        int revealTally) {
 
   // get coords
 
@@ -173,6 +178,36 @@ void initalizeGameBoard(int gameBoard[9][9], bool boolGameBoard[9][9]) {
 
   cout << "calculating baord" << endl;
   fillWithInts(gameBoard);
+
+  recursiveRevealExplosion(gameBoard, boolGameBoard, userStartX, userStartY);
+
+  for (int i = 0; i < 9; i++) {
+    for (int j = 0; j < 9; j++) {
+      if (boolGameBoard[i][j]) {
+        revealTally++;
+      }
+    }
+  }
 }
 
+void recursiveRevealExplosion(int gameBoard[9][9], bool boolGameBoard[9][9],
+                              int X, int Y) {
+  int defIndexX[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
+  int defIndexY[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
+
+  for (int i = 0; i < 8; i++) {
+
+    int updateRow = X + defIndexX[i];
+    int updateCol = Y + defIndexY[i];
+
+    if (updateRow >= 0 && updateRow < 9 && updateCol >= 0 && updateCol < 9 &&
+        !boolGameBoard[updateRow][updateCol]) {
+      boolGameBoard[updateRow][updateCol] = true;
+      if (gameBoard[updateRow][updateCol] == 0) {
+        recursiveRevealExplosion(gameBoard, boolGameBoard, updateRow,
+                                 updateCol);
+      }
+    }
+  }
+}
 
