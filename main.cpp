@@ -31,16 +31,13 @@ void recursiveRevealExplosion(vector<vector<int>> &gameBoard,
                               vector<vector<bool>> &boolGameBoard, int X,
                               int Y);
 void printGameRules();
+int getUserDifficulty();
 
 int main() {
 
   printRules();
 
-  cout << endl;
-  cout << "Chose Your Difficulty: " << endl;
-  cout << "1. Easy    2. Medium    3. Hard" << endl;
-  int difficulty = 0;
-  cin >> difficulty;
+  int difficulty = getUserDifficulty();
 
   int kRows = 9, kCollums = 9, numOfMines = 0, displaySubtract = 0;
 
@@ -64,6 +61,8 @@ int main() {
     break;
   }
   }
+
+  
   displaySubtract = kRows - 1;
   int maxDisplay = kRows * kCollums;
 
@@ -127,8 +126,7 @@ int main() {
 
   if (win == true) {
     cout << "you win!" << endl;
-  } 
-  else {
+  } else {
     cout << "you lose!" << endl;
   }
 }
@@ -364,4 +362,18 @@ void printRules() {
 }
 void printGameRules() {
   cout << endl << "eventuall, we'll add rules later\n" << endl;
+}
+
+int getUserDifficulty() {
+  int difficulty = 0;
+  while(difficulty != 1 && difficulty != 2 && difficulty != 3) {
+  cin.clear();
+  cin.ignore(); 
+  cout << endl;
+  cout << "Chose Your Difficulty: " << endl;
+  cout << "1. Easy    2. Medium    3. Hard" << endl;
+  cin >> difficulty;
+  
+  }
+  return difficulty;
 }
