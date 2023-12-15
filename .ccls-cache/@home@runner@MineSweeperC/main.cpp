@@ -28,7 +28,8 @@ int main() {
   initalizeGameBoard(gameBoard, boolGameBoard);
   printBoolBoard(boolGameBoard, gameBoard);
   cout << endl;
-  //printGameBoardTesting(gameBoard, boolGameBoard);
+
+  printGameBoardTesting(gameBoard, boolGameBoard);
 
   // while(gameOver == false){
 
@@ -44,10 +45,10 @@ void printBoolBoard(bool boolGameBoard[9][9], int gameBoard[9][9]) {
       } else {
         cout << right << setw(3) << "_";
       }
-      }
-    cout << endl;
     }
+    cout << endl;
   }
+}
 void printRules() {
   cout << "Welcome to Minesweeper!" << endl;
   bool startGame = false;
@@ -85,20 +86,30 @@ void fillWithMines(int gameBoard[9][9], int userStartX, int userStartY) {
   int randX = -1, randY = -1;
 
   while (numOfMines <= maxNumOfMines) {
-
+    bool check = true;
     randX = rand() % 9;
     randY = rand() % 9;
 
-    if (gameBoard[randX][randY] != 0 ||
-        (randX == userStartX && randY == userStartY)) {
-     // cout << "flag 1" << endl; 
-      continue;
-    }
+    int defIndexX[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
+    int defIndexY[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
 
-    gameBoard[randX][randY] = -1;
-    numOfMines++;
-    if(numOfMines == maxNumOfMines){
-      break; 
+    for (int i = 0; i < 8; i++) {
+      int updateRow = userStartX + defIndexX[i];
+      int updateCol = userStartY + defIndexY[i];
+
+      if (gameBoard[randX][randY] != 0 ||
+          (randX == updateRow && randY == updateCol)) {
+        // cout << "flag 1" << endl;
+        check = false;
+        break;
+      }
+    }
+    if (check == true) {
+      gameBoard[randX][randY] = -1;
+      numOfMines++;
+      if (numOfMines == maxNumOfMines) {
+        break;
+      }
     }
   }
 }
@@ -153,7 +164,7 @@ void initalizeGameBoard(int gameBoard[9][9], bool boolGameBoard[9][9]) {
   cout << "zeroing game board" << endl;
   zeroGameBoard(gameBoard, boolGameBoard);
 
-  //gameBoard[userStartX][userStartY] = -2;
+  // gameBoard[userStartX][userStartY] = -2;
   boolGameBoard[userStartX][userStartY] = true;
 
   // fill game board with mines
@@ -163,3 +174,5 @@ void initalizeGameBoard(int gameBoard[9][9], bool boolGameBoard[9][9]) {
   cout << "calculating baord" << endl;
   fillWithInts(gameBoard);
 }
+
+
