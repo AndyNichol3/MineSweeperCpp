@@ -19,7 +19,7 @@ using namespace std;
 // functions
 void printGameWelcome();
 int initalizeGameBoard(vector<vector<int>> &gameBoard,
-                       vector<vector<bool>> &boolGameBoard, int revealTally);
+                       vector<vector<bool>> &boolGameBoard, int revealTally, int kRows, int kCollums);
 void fillWithMines(vector<vector<int>> &gameBoard, int userStartRow,
                    int userStartCol);
 void printGameBoardTesting(const vector<vector<int>> &gameBoard,
@@ -77,7 +77,7 @@ int main() {
   int revealTally = 0;
   int round = 1;
 
-  revealTally = initalizeGameBoard(gameBoard, boolGameBoard, revealTally);
+  revealTally = initalizeGameBoard(gameBoard, boolGameBoard, revealTally, kRows, kCollums);
   printBoolBoard(boolGameBoard, gameBoard);
   cout << endl;
 
@@ -95,8 +95,10 @@ int main() {
     int userRow = -2, userCol = -2;
     bool validInput = false;
 
+    cout << "Enter Next Point (-1 to exit): " << endl;
+
     while (!validInput) {
-      cout << "Enter Next Point (-1 to exit): " << endl;
+    
       cout << "X (0-8): ";
       if (!(cin >> userCol)) {
         cin.clear();
@@ -114,7 +116,7 @@ int main() {
     validInput = false;
 
     while (!validInput) {
-      cout << "Enter Next Point (-1 to exit): " << endl;
+      //cout << "Enter Next Point (-1 to exit): " << endl;
       cout << "Y (0-8): ";
       if (!(cin >> userRow)) {
         cin.clear();
@@ -123,6 +125,7 @@ int main() {
         cin.clear();
         cin.ignore(numeric_limits<streamsize>::max(), '\n');
       } else {
+       
         validInput = true;
       }
     }
@@ -294,7 +297,7 @@ void fillWithInts(vector<vector<int>> &gameBoard) {
   }
 }
 int initalizeGameBoard(vector<vector<int>> &gameBoard,
-                       vector<vector<bool>> &boolGameBoard, int revealTally) {
+                       vector<vector<bool>> &boolGameBoard, int revealTally, int kRows, int kCollums) {
 
   zeroGameBoard(gameBoard, boolGameBoard);
   printBoolBoard(boolGameBoard, gameBoard);
@@ -303,6 +306,7 @@ int initalizeGameBoard(vector<vector<int>> &gameBoard,
   cout << RED << "                ROUND 1" << endl;
   cout << WHITE << "_____________________________________\n" << RESET << endl;
 
+  /*
   cout << "\nEnter Starting Point: ";
   int userStartRow = -1;
   int userStartCol = -1;
@@ -310,6 +314,54 @@ int initalizeGameBoard(vector<vector<int>> &gameBoard,
   cin >> userStartCol;
   cout << "Y (0-8): ";
   cin >> userStartRow;
+*/
+
+
+
+
+int userStartRow = -2, userStartCol = -2;
+bool validInput = false;
+
+   cout << "Enter Starting Point (-1 to exit): " << endl;
+
+while (!validInput) {
+ 
+  cout << "X (0-8): ";
+  if (!(cin >> userStartCol)) {
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+  } else if (userStartCol > kCollums || userStartCol < -1) {
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+  } else {
+    if (userStartCol == -1) {
+      exit(0);
+    }
+    validInput = true;
+  }
+}
+validInput = false;
+
+while (!validInput) {
+  cout << "Y (0-8): ";
+  if (!(cin >> userStartRow)) {
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+  } else if (userStartRow > kRows || userStartRow < 0) {
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+  } else {
+    validInput = true;
+  }
+}
+
+
+
+
+
+
+
+  
   userStartRow = 8 - userStartRow;
   cout << endl;
 
