@@ -42,26 +42,30 @@ int main() {
   int difficulty = 0;
   cin >> difficulty;
 
-  int kRows = 9, kCollums = 9;
+  int kRows = 9, kCollums = 9, numOfMines = 0, displaySubtract = 0;
 
   switch (difficulty) {
   case 1: {
     kRows = 9;
     kCollums = 9;
-
+    numOfMines = 10;
     break;
   }
   case 2: {
-    kRows = 9;
-    kCollums = 9;
+    kRows = 16;
+    kCollums = 16;
+    numOfMines = 40;
     break;
   }
   case 3: {
-    kRows = 9;
-    kCollums = 9;
+    kRows = 16;
+    kCollums = 30;
+    numOfMines = 99;
     break;
   }
   }
+  displaySubtract = kRows - 1;
+  int maxDisplay = kRows * kCollums;
 
   bool gameOver = false;
   bool win = false;
@@ -69,8 +73,6 @@ int main() {
   vector<vector<int>> gameBoard(kRows, vector<int>(kCollums));
   vector<vector<bool>> boolGameBoard(kRows, vector<bool>(kCollums));
 
-  // int gameBoard[9][9];
-  // bool boolGameBoard[9][9];
   int revealTally = 0;
   int round = 1;
 
@@ -98,7 +100,7 @@ int main() {
     }
     cout << "Y (0-8): ";
     cin >> userRow;
-    userRow = 8 - userRow;
+    userRow = displaySubtract - userRow;
 
     // add condition to make sure within bounds
 
@@ -115,7 +117,7 @@ int main() {
       revealTally++;
     }
 
-    if (revealTally == 81) {
+    if (revealTally == maxDisplay) {
       gameOver = true;
       win = true;
     }
@@ -125,7 +127,8 @@ int main() {
 
   if (win == true) {
     cout << "you win!" << endl;
-  } else {
+  } 
+  else {
     cout << "you lose!" << endl;
   }
 }
@@ -179,34 +182,6 @@ void printBoolBoard(const vector<vector<bool>> &boolGameBoard,
   std::cout << std::endl;
 }
 
-void printRules() {
-  cout << RED << "\n\n-------------------------------------" << endl;
-  cout << WHITE << "       Welcome to Minesweeper!       " << endl;
-  cout << RED << "-------------------------------------\n" << RESET << endl;
-  bool startGame = false;
-  while (startGame == false) {
-
-    cout << "Press 1 For Rules or 2 To Start: " << endl;
-    int userStartGame = 0;
-    cin >> userStartGame;
-    if (userStartGame == 1) {
-      // add actual rules later
-      cout << "Here are the Rules " << endl;
-      printGameRules();
-    } else if (userStartGame == 2) {
-
-      cout << "Here we go! \n" << endl;
-      // cout << "-------------------------------------\n" << endl;
-      startGame = true;
-      break;
-    } else {
-      //  cout << "invalid input" << endl;
-      std::cout << "\nInvalid input. Please try again.\n" << std::endl;
-      std::cin.clear(); // Clear error flags
-      std::cin.ignore();
-    }
-  }
-}
 void printGameBoardTesting(const vector<vector<int>> &gameBoard,
                            const vector<vector<bool>> &boolGameBoard) {
 
@@ -279,7 +254,6 @@ void calcGameBoardInts(vector<vector<int>> &gameBoard, int x, int y) {
     }
   }
 }
-
 void fillWithInts(vector<vector<int>> &gameBoard) {
   for (int i = 0; i < 9; i++) {
     for (int j = 0; j < 9; j++) {
@@ -360,6 +334,34 @@ void recursiveRevealExplosion(vector<vector<int>> &gameBoard,
   }
 }
 
+void printRules() {
+  cout << RED << "\n\n-------------------------------------" << endl;
+  cout << WHITE << "       Welcome to Minesweeper!       " << endl;
+  cout << RED << "-------------------------------------\n" << RESET << endl;
+  bool startGame = false;
+  while (startGame == false) {
+
+    cout << "Press 1 For Rules or 2 To Start: " << endl;
+    int userStartGame = 0;
+    cin >> userStartGame;
+    if (userStartGame == 1) {
+      // add actual rules later
+      cout << "Here are the Rules " << endl;
+      printGameRules();
+    } else if (userStartGame == 2) {
+
+      cout << "Here we go! \n" << endl;
+      // cout << "-------------------------------------\n" << endl;
+      startGame = true;
+      break;
+    } else {
+      //  cout << "invalid input" << endl;
+      std::cout << "\nInvalid input. Please try again.\n" << std::endl;
+      std::cin.clear(); // Clear error flags
+      std::cin.ignore();
+    }
+  }
+}
 void printGameRules() {
   cout << endl << "eventuall, we'll add rules later\n" << endl;
 }
