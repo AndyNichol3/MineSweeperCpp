@@ -4,8 +4,8 @@
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
-#include <vector>
 #include <limits>
+#include <vector>
 
 // custom color values
 #define RESET "\033[0m"
@@ -19,7 +19,8 @@ using namespace std;
 // functions
 void printGameWelcome();
 int initalizeGameBoard(vector<vector<int>> &gameBoard,
-                       vector<vector<bool>> &boolGameBoard, int revealTally, int kRows, int kCollums);
+                       vector<vector<bool>> &boolGameBoard, int revealTally,
+                       int kRows, int kCollums);
 void fillWithMines(vector<vector<int>> &gameBoard, int userStartRow,
                    int userStartCol);
 void printGameBoardTesting(const vector<vector<int>> &gameBoard,
@@ -77,7 +78,8 @@ int main() {
   int revealTally = 0;
   int round = 1;
 
-  revealTally = initalizeGameBoard(gameBoard, boolGameBoard, revealTally, kRows, kCollums);
+  revealTally = initalizeGameBoard(gameBoard, boolGameBoard, revealTally, kRows,
+                                   kCollums);
   printBoolBoard(boolGameBoard, gameBoard);
   cout << endl;
 
@@ -92,52 +94,62 @@ int main() {
     cout << RED << "                ROUND " << round << endl;
     cout << WHITE << "_____________________________________\n" << RESET << endl;
 
+    bool revealedTile = false;
     int userRow = -2, userCol = -2;
     bool validInput = false;
 
-    cout << "Enter Next Point (-1 to exit): " << endl;
+    while (!revealedTile) {
 
-    while (!validInput) {
-    
-      cout << "X (0-8): ";
-      if (!(cin >> userCol)) {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-      } else if (userCol > kCollums || userCol < -1) {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-      } else {
-        if (userCol == -1) {
-          exit(0);
+      userRow = -2, userCol = -2;
+      validInput = false;
+
+      cout << "Enter Next Point (-1 to exit): " << endl;
+
+      while (!validInput) {
+
+        cout << "X (0-8): ";
+        if (!(cin >> userCol)) {
+          cin.clear();
+          cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        } else if (userCol > kCollums || userCol < -1) {
+          cin.clear();
+          cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        } else {
+          if (userCol == -1) {
+            exit(0);
+          }
+          validInput = true;
         }
-        validInput = true;
       }
-    }
-    validInput = false;
+      validInput = false;
 
-    while (!validInput) {
-      //cout << "Enter Next Point (-1 to exit): " << endl;
-      cout << "Y (0-8): ";
-      if (!(cin >> userRow)) {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
-      } else if (userRow > kRows || userRow < 0) {
-        cin.clear();
-        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+      while (!validInput) {
+        // cout << "Enter Next Point (-1 to exit): " << endl;
+        cout << "Y (0-8): ";
+        if (!(cin >> userRow)) {
+          cin.clear();
+          cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        } else if (userRow > kRows || userRow < 0) {
+          cin.clear();
+          cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        } else {
+
+          validInput = true;
+        }
+      }
+
+      // cout << "Y (0-8): ";
+      // cin >> userRow;
+
+      // adujust user input based on board size
+      userRow = displaySubtract - userRow;
+
+      if (boolGameBoard[userRow][userCol] == true) {
+        cout << "You have already revealed this tile!\n" << endl;
       } else {
-       
-        validInput = true;
+        revealedTile = true;
       }
     }
-    
-   // cout << "Y (0-8): ";
-    // cin >> userRow;
-
-
-
-    
-    // adujust user input based on board size
-    userRow = displaySubtract - userRow;
 
     // add condition to make sure within bounds
 
@@ -297,7 +309,8 @@ void fillWithInts(vector<vector<int>> &gameBoard) {
   }
 }
 int initalizeGameBoard(vector<vector<int>> &gameBoard,
-                       vector<vector<bool>> &boolGameBoard, int revealTally, int kRows, int kCollums) {
+                       vector<vector<bool>> &boolGameBoard, int revealTally,
+                       int kRows, int kCollums) {
 
   zeroGameBoard(gameBoard, boolGameBoard);
   printBoolBoard(boolGameBoard, gameBoard);
@@ -316,52 +329,42 @@ int initalizeGameBoard(vector<vector<int>> &gameBoard,
   cin >> userStartRow;
 */
 
+  int userStartRow = -2, userStartCol = -2;
+  bool validInput = false;
 
+  cout << "Enter Starting Point (-1 to exit): " << endl;
 
+  while (!validInput) {
 
-int userStartRow = -2, userStartCol = -2;
-bool validInput = false;
-
-   cout << "Enter Starting Point (-1 to exit): " << endl;
-
-while (!validInput) {
- 
-  cout << "X (0-8): ";
-  if (!(cin >> userStartCol)) {
-    cin.clear();
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-  } else if (userStartCol > kCollums || userStartCol < -1) {
-    cin.clear();
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-  } else {
-    if (userStartCol == -1) {
-      exit(0);
+    cout << "X (0-8): ";
+    if (!(cin >> userStartCol)) {
+      cin.clear();
+      cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    } else if (userStartCol > kCollums || userStartCol < -1) {
+      cin.clear();
+      cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    } else {
+      if (userStartCol == -1) {
+        exit(0);
+      }
+      validInput = true;
     }
-    validInput = true;
   }
-}
-validInput = false;
+  validInput = false;
 
-while (!validInput) {
-  cout << "Y (0-8): ";
-  if (!(cin >> userStartRow)) {
-    cin.clear();
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-  } else if (userStartRow > kRows || userStartRow < 0) {
-    cin.clear();
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-  } else {
-    validInput = true;
+  while (!validInput) {
+    cout << "Y (0-8): ";
+    if (!(cin >> userStartRow)) {
+      cin.clear();
+      cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    } else if (userStartRow > kRows || userStartRow < 0) {
+      cin.clear();
+      cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    } else {
+      validInput = true;
+    }
   }
-}
 
-
-
-
-
-
-
-  
   userStartRow = 8 - userStartRow;
   cout << endl;
 
