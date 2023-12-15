@@ -1,11 +1,12 @@
 // minesweeper
-
+// headers
 #include <cmath>
 #include <cstdlib>
 #include <iomanip>
 #include <iostream>
 #include <vector>
 
+// custom color values
 #define RESET "\033[0m"
 #define RED "\033[0;31m"
 #define GREEN "\e[0;36m"
@@ -14,7 +15,8 @@
 
 using namespace std;
 
-void printRules();
+// functions
+void printGameWelcome();
 int initalizeGameBoard(vector<vector<int>> &gameBoard,
                        vector<vector<bool>> &boolGameBoard, int revealTally);
 void fillWithMines(vector<vector<int>> &gameBoard, int userStartRow,
@@ -33,9 +35,10 @@ void recursiveRevealExplosion(vector<vector<int>> &gameBoard,
 void printGameRules();
 int getUserDifficulty();
 
+
 int main() {
 
-  printRules();
+  printGameWelcome();
 
   int difficulty = getUserDifficulty();
 
@@ -97,8 +100,10 @@ int main() {
     if (userCol == -1) {
       exit(0);
     }
+    
     cout << "Y (0-8): ";
     cin >> userRow;
+    // adujust user input based on board size
     userRow = displaySubtract - userRow;
 
     // add condition to make sure within bounds
@@ -133,7 +138,7 @@ int main() {
 
 void printBoolBoard(const vector<vector<bool>> &boolGameBoard,
                     const vector<vector<int>> &gameBoard) {
-  // Print column labels
+
 
   // Print separator bar
   cout << endl;
@@ -332,7 +337,7 @@ void recursiveRevealExplosion(vector<vector<int>> &gameBoard,
   }
 }
 
-void printRules() {
+void printGameWelcome() {
   cout << RED << "\n\n-------------------------------------" << endl;
   cout << WHITE << "       Welcome to Minesweeper!       " << endl;
   cout << RED << "-------------------------------------\n" << RESET << endl;
