@@ -43,21 +43,30 @@ void printGameRules();
 int getUserDifficulty();
 int getInputX(int kCollums);
 int getInputY(int kRows);
-void printRoundHeader(int round); 
-void printWin(); 
+void printRoundHeader(int round);
+void printWin();
 void printLose();
+void initalizeGameBoard(vector<vector<bool>> &boolGameBoard,
+                        vector<vector<int>> &gameBoard, int kRows, int kCollums,
+                        int maxNumOfMines);
+bool playGame(int kCollums, int kRows, vector<vector<bool>> &boolGameBoard,
+              vector<vector<int>> &gameBoard, int maxNumOfMines);
 
 int main() {
 
   // define variable
   int kRows = 0, kCollums = 0, maxNumOfMines = 0, displaySubtract = 0;
-  int revealTally = 0, round = 1;
-  bool gameOver = false, win = false;
+  int round = 1;
 
+  // print the game header,
+  // also includes rule menu which keeps user until decides to start
   printGameWelcome();
 
+  // get the user difficulty
+  // 1 easy 2 meduim 3 hard
   int difficulty = getUserDifficulty();
 
+  // define some constasnts based on the difficulty
   switch (difficulty) {
   case 1: {
     kRows = 9;
@@ -79,85 +88,26 @@ int main() {
   }
   }
 
+  // create the definition for some display variables
   displaySubtract = kRows - 1;
-  int maxDisplay = kRows * kCollums;
 
+  // creates the game baords
+  // one to hold the ints and one to hold the bools
   vector<vector<int>> gameBoard(kRows, vector<int>(kCollums));
   vector<vector<bool>> boolGameBoard(kRows, vector<bool>(kCollums));
 
-  zeroGameBoard(gameBoard, boolGameBoard, kRows, kCollums);
-  printBoolBoard(boolGameBoard, gameBoard, kRows, kCollums);
+  // handles all of the creation, and the round 1 of them game
+  // since the game cannot be lost on round one and the variables
+  // are not reused anywhere else
+  initalizeGameBoard(boolGameBoard, gameBoard, kRows, kCollums, maxNumOfMines);
 
-  printRoundHeader(round);
+  bool win = playGame(kCollums, kRows, boolGameBoard, gameBoard, maxNumOfMines);
 
-  cout << "Enter Starting Point (-1 to exit): " << endl;
-  int userStartCol = getInputX(kCollums);
-  int userStartRow = getInputY(kRows);
-
-  cout << endl;
-
-  boolGameBoard[userStartRow][userStartCol] = true;
-
-  fillWithMines(gameBoard, userStartRow, userStartCol, maxNumOfMines, kRows, kCollums);
-  fillWithInts(gameBoard, kRows, kCollums);
-  recursiveRevealExplosion(gameBoard, boolGameBoard, userStartRow, userStartCol, kRows, kCollums);
-  printBoolBoard(boolGameBoard, gameBoard, kRows, kCollums);
-
-  
-  while (gameOver == false) {
-
-    round++;
-
-    printRoundHeader(round);
-
-    bool revealedTile = false;
-    int userRow = -2, userCol = -2;
-
-
-    while (!revealedTile) {
-      
-      cout << "Enter Next Point (-1 to exit): " << endl;
-      userCol = getInputX(kCollums);
-      userRow = getInputY(kRows);
-
-
-      if (boolGameBoard[userRow][userCol] == true) {
-        cout << "You have already revealed this tile!\n" << endl;
-      } 
-      else {
-        revealedTile = true;
-        break; 
-      }
-    }
-
-    
-    if (gameBoard[userRow][userCol] == -1) {
-      gameOver = true;
-      cout << "you hit a mine!" << endl;
-      boolGameBoard[userRow][userCol] = true;
-
-    } else {
-      boolGameBoard[userRow][userCol] = true;
-      if (gameBoard[userRow][userCol] == 0) {
-        recursiveRevealExplosion(gameBoard, boolGameBoard, userRow, userCol,
-                                 kRows, kCollums);
-      }
-    }
-
-    revealTally = printBoolBoard(boolGameBoard, gameBoard, kRows, kCollums);
-
-    if (revealTally == (maxDisplay - maxNumOfMines)) {
-      gameOver = true;
-      win = true;
-    }
-  }
-
-  if (win == true){
+  if (win == true) {
     printWin();
 
-  } 
-  else {
-    printLose(); 
+  } else {
+    printLose();
   }
 }
 
@@ -414,21 +364,97 @@ int getInputY(int kRows) {
   return userIn;
 }
 
-void printRoundHeader(int round){
+void printRoundHeader(int round) {
 
   cout << WHITE << "_____________________________________\n" << endl;
-  cout << RED << "                ROUND " << round <<endl;
+  cout << RED << "                ROUND " << round << endl;
   cout << WHITE << "_____________________________________\n" << RESET << endl;
-
 }
-  void printWin(){
-    cout << WHITE << "\n_____________________________________\n" << endl;
-    cout << RED << "               YOU WIN!" << endl;
-    cout << WHITE << "_____________________________________\n" << RESET << endl;
-  }
-  void printLose(){
-    cout << WHITE << "\n_____________________________________\n" << endl;
-    cout << RED << "               YOU LOSE!" << endl;
-    cout << WHITE << "_____________________________________\n" << RESET << endl;
+void printWin() {
+  cout << WHITE << "\n_____________________________________\n" << endl;
+  cout << RED << "               YOU WIN!" << endl;
+  cout << WHITE << "_____________________________________\n" << RESET << endl;
+}
+void printLose() {
+  cout << WHITE << "\n_____________________________________\n" << endl;
+  cout << RED << "               YOU LOSE!" << endl;
+  cout << WHITE << "_____________________________________\n" << RESET << endl;
+}
 
+void initalizeGameBoard(vector<vector<bool>> &boolGameBoard,
+                        vector<vector<int>> &gameBoard, int kRows, int kCollums,
+                        int maxNumOfMines) {
+
+  zeroGameBoard(gameBoard, boolGameBoard, kRows, kCollums);
+  printBoolBoard(boolGameBoard, gameBoard, kRows, kCollums);
+
+  printRoundHeader(1);
+
+  cout << "Enter Starting Point (-1 to exit): " << endl;
+  int userStartCol = getInputX(kCollums);
+  int userStartRow = getInputY(kRows);
+
+  cout << endl;
+
+  boolGameBoard[userStartRow][userStartCol] = true;
+
+  fillWithMines(gameBoard, userStartRow, userStartCol, maxNumOfMines, kRows,
+                kCollums);
+  fillWithInts(gameBoard, kRows, kCollums);
+  recursiveRevealExplosion(gameBoard, boolGameBoard, userStartRow, userStartCol,
+                           kRows, kCollums);
+  printBoolBoard(boolGameBoard, gameBoard, kRows, kCollums);
+}
+
+bool playGame(int kCollums, int kRows, vector<vector<bool>> &boolGameBoard,
+              vector<vector<int>> &gameBoard, int maxNumOfMines) {
+
+  bool gameOver = false, win = false;
+  int round = 1, revealTally = 0;
+  int maxDisplay = kRows * kCollums;
+  while (gameOver == false) {
+
+    round++;
+
+    printRoundHeader(round);
+
+    bool revealedTile = false;
+    int userRow = -2, userCol = -2;
+
+    while (!revealedTile) {
+
+      cout << "Enter Next Point (-1 to exit): " << endl;
+      userCol = getInputX(kCollums);
+      userRow = getInputY(kRows);
+
+      if (boolGameBoard[userRow][userCol] == true) {
+        cout << "You have already revealed this tile!\n" << endl;
+      } else {
+        revealedTile = true;
+        break;
+      }
+    }
+
+    if (gameBoard[userRow][userCol] == -1) {
+      gameOver = true;
+      cout << "you hit a mine!" << endl;
+      boolGameBoard[userRow][userCol] = true;
+
+    } else {
+      boolGameBoard[userRow][userCol] = true;
+      if (gameBoard[userRow][userCol] == 0) {
+        recursiveRevealExplosion(gameBoard, boolGameBoard, userRow, userCol,
+                                 kRows, kCollums);
+      }
+    }
+
+    revealTally = printBoolBoard(boolGameBoard, gameBoard, kRows, kCollums);
+
+    if (revealTally == (maxDisplay - maxNumOfMines)) {
+      gameOver = true;
+      win = true;
+    }
   }
+
+  return win;
+}
