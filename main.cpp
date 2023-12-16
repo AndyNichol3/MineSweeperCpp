@@ -21,9 +21,7 @@ using namespace std;
 
 // functions
 void printGameWelcome();
-void initalizeGameBoard(vector<vector<int>> &gameBoard,
-                        vector<vector<bool>> &boolGameBoard, int kRows,
-                        int kCollums, int maxNumOfMines);
+
 void fillWithMines(vector<vector<int>> &gameBoard, int userStartRow,
                    int userStartCol, int maxNumOfMines, int kRows,
                    int kCollums);
@@ -43,14 +41,22 @@ void recursiveRevealExplosion(vector<vector<int>> &gameBoard,
                               int kRows, int kCollums);
 void printGameRules();
 int getUserDifficulty();
+int getInputX(int kCollums);
+int getInputY(int kRows);
+void printRoundHeader(int round); 
+void printWin(); 
+void printLose();
 
 int main() {
+
+  // define variable
+  int kRows = 0, kCollums = 0, maxNumOfMines = 0, displaySubtract = 0;
+  int revealTally = 0, round = 1;
+  bool gameOver = false, win = false;
 
   printGameWelcome();
 
   int difficulty = getUserDifficulty();
-
-  int kRows = 0, kCollums = 0, maxNumOfMines = 0, displaySubtract = 0;
 
   switch (difficulty) {
   case 1: {
@@ -74,83 +80,57 @@ int main() {
   }
 
   displaySubtract = kRows - 1;
-
   int maxDisplay = kRows * kCollums;
-
-  bool gameOver = false;
-  bool win = false;
 
   vector<vector<int>> gameBoard(kRows, vector<int>(kCollums));
   vector<vector<bool>> boolGameBoard(kRows, vector<bool>(kCollums));
 
-  int revealTally = 0;
-  int round = 1;
-
-  initalizeGameBoard(gameBoard, boolGameBoard, kRows, kCollums, maxNumOfMines);
+  zeroGameBoard(gameBoard, boolGameBoard, kRows, kCollums);
   printBoolBoard(boolGameBoard, gameBoard, kRows, kCollums);
+
+  printRoundHeader(round);
+
+  cout << "Enter Starting Point (-1 to exit): " << endl;
+  int userStartCol = getInputX(kCollums);
+  int userStartRow = getInputY(kRows);
+
   cout << endl;
 
+  boolGameBoard[userStartRow][userStartCol] = true;
+
+  fillWithMines(gameBoard, userStartRow, userStartCol, maxNumOfMines, kRows, kCollums);
+  fillWithInts(gameBoard, kRows, kCollums);
+  recursiveRevealExplosion(gameBoard, boolGameBoard, userStartRow, userStartCol, kRows, kCollums);
+  printBoolBoard(boolGameBoard, gameBoard, kRows, kCollums);
+
+  
   while (gameOver == false) {
 
     round++;
 
-    cout << WHITE << "_____________________________________\n" << endl;
-    cout << RED << "                ROUND " << round << endl;
-    cout << WHITE << "_____________________________________\n" << RESET << endl;
+    printRoundHeader(round);
 
     bool revealedTile = false;
     int userRow = -2, userCol = -2;
-    bool validInput = false;
+
 
     while (!revealedTile) {
-
-      userRow = -2, userCol = -2;
-      validInput = false;
-
+      
       cout << "Enter Next Point (-1 to exit): " << endl;
+      userCol = getInputX(kCollums);
+      userRow = getInputY(kRows);
 
-      while (!validInput) {
-        cout << "X (0-" << kCollums - 1 << "): ";
-
-        if (!(cin >> userCol)) {
-          cin.clear();
-          cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        } else if (userCol >= kCollums || userCol < -1) {
-          cin.clear();
-          cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        } else {
-          if (userCol == -1) {
-            exit(0);
-          }
-          validInput = true;
-        }
-      }
-      validInput = false;
-
-      while (!validInput) {
-        // cout << "Enter Next Point (-1 to exit): " << endl;
-        cout << "Y (0-" << kRows - 1 << "): ";
-        if (!(cin >> userRow)) {
-          cin.clear();
-          cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        } else if (userRow >= kRows || userRow < 0) {
-          cin.clear();
-          cin.ignore(numeric_limits<streamsize>::max(), '\n');
-        } else {
-
-          validInput = true;
-        }
-      }
-
-      userRow = displaySubtract - userRow;
 
       if (boolGameBoard[userRow][userCol] == true) {
         cout << "You have already revealed this tile!\n" << endl;
-      } else {
+      } 
+      else {
         revealedTile = true;
+        break; 
       }
     }
 
+    
     if (gameBoard[userRow][userCol] == -1) {
       gameOver = true;
       cout << "you hit a mine!" << endl;
@@ -172,16 +152,12 @@ int main() {
     }
   }
 
-  if (win == true) {
-    cout << WHITE << "\n_____________________________________\n" << endl;
-    cout << RED << "               YOU WIN!" << endl;
-    cout << WHITE << "_____________________________________\n" << RESET << endl;
-    // cout << "you win!" << endl;
-  } else {
-    cout << WHITE << "\n_____________________________________\n" << endl;
-    cout << RED << "               YOU LOSE!" << endl;
-    cout << WHITE << "_____________________________________\n" << RESET << endl;
-    // cout << "you lose!" << endl;
+  if (win == true){
+    printWin();
+
+  } 
+  else {
+    printLose(); 
   }
 }
 
@@ -191,43 +167,43 @@ int printBoolBoard(const vector<vector<bool>> &boolGameBoard,
   int revealTally = 0;
 
   cout << endl;
-  std::cout << RED << "   +----------------------------+" << std::endl;
+  cout << RED << "   +----------------------------+" << endl;
 
   for (int i = 0; i < kRows; ++i) {
-    std::cout << RED << std::setw(2) << kRows - 1 - i << " |";
+    cout << RED << setw(2) << kRows - 1 - i << " |";
     for (int j = 0; j < kCollums; ++j) {
       if (boolGameBoard[i][j]) {
         revealTally++;
         switch (gameBoard[i][j]) {
         case 0:
-          std::cout << WHITE << std::setw(3) << gameBoard[i][j];
+          cout << WHITE << setw(3) << gameBoard[i][j];
           break;
         case 1:
-          std::cout << BLUE << std::setw(3) << gameBoard[i][j];
+          cout << BLUE << setw(3) << gameBoard[i][j];
           break;
         case 2:
-          std::cout << GREEN << std::setw(3) << gameBoard[i][j];
+          cout << GREEN << setw(3) << gameBoard[i][j];
           break;
         case 3:
-          std::cout << RED << std::setw(3) << gameBoard[i][j];
+          cout << RED << setw(3) << gameBoard[i][j];
           break;
         default:
-          std::cout << RED << std::setw(3) << gameBoard[i][j];
+          cout << RED << setw(3) << gameBoard[i][j];
           break;
         }
       } else {
-        std::cout << WHITE << std::setw(3) << "-";
+        cout << WHITE << setw(3) << "-";
       }
     }
-    std::cout << RED << " |" << std::endl;
+    cout << RED << " |" << endl;
   }
 
-  std::cout << RED << "   +----------------------------+" << RESET << std::endl;
-  std::cout << RED << "    ";
+  cout << RED << "   +----------------------------+" << RESET << endl;
+  cout << RED << "    ";
   for (int i = 0; i < kCollums; ++i) {
-    std::cout << RED << std::setw(3) << i;
+    cout << RED << setw(3) << i;
   }
-  std::cout << std::endl;
+  cout << endl;
 
   return revealTally;
 }
@@ -325,69 +301,6 @@ void fillWithInts(vector<vector<int>> &gameBoard, int kRows, int kCollums) {
     }
   }
 }
-void initalizeGameBoard(vector<vector<int>> &gameBoard,
-                        vector<vector<bool>> &boolGameBoard, int kRows,
-                        int kCollums, int maxNumOfMines) {
-  cout << "flag 1" << endl;
-
-  zeroGameBoard(gameBoard, boolGameBoard, kRows, kCollums);
-  cout << "flag 2" << endl;
-  printBoolBoard(boolGameBoard, gameBoard, kRows, kCollums);
-  cout << "flag 3" << endl;
-
-  cout << WHITE << "_____________________________________\n" << endl;
-  cout << RED << "                ROUND 1" << endl;
-  cout << WHITE << "_____________________________________\n" << RESET << endl;
-
-  int userStartRow = -2, userStartCol = -2;
-  bool validInput = false;
-
-  cout << "Enter Starting Point (-1 to exit): " << endl;
-
-  while (!validInput) {
-
-    cout << "X (0-" << kCollums - 1 << "): ";
-    if (!(cin >> userStartCol)) {
-      cin.clear();
-      cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    } else if (userStartCol >= kCollums || userStartCol < -1) {
-      cin.clear();
-      cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    } else {
-      if (userStartCol == -1) {
-        exit(0);
-      }
-      validInput = true;
-    }
-  }
-  validInput = false;
-
-  while (!validInput) {
-    cout << "Y (0-" << kRows - 1 << "): ";
-    if (!(cin >> userStartRow)) {
-      cin.clear();
-      cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    } else if (userStartRow >= kRows || userStartRow < 0) {
-      cin.clear();
-      cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    } else {
-      validInput = true;
-    }
-  }
-
-  userStartRow = kRows - 1 - userStartRow;
-  cout << endl;
-
-  boolGameBoard[userStartRow][userStartCol] = true;
-
-  fillWithMines(gameBoard, userStartRow, userStartCol, maxNumOfMines, kRows,
-                kCollums);
-
-  fillWithInts(gameBoard, kRows, kCollums);
-
-  recursiveRevealExplosion(gameBoard, boolGameBoard, userStartRow, userStartCol,
-                           kRows, kCollums);
-}
 
 void recursiveRevealExplosion(vector<vector<int>> &gameBoard,
                               vector<vector<bool>> &boolGameBoard, int X, int Y,
@@ -433,12 +346,13 @@ void printGameWelcome() {
       break;
     } else {
       //  cout << "invalid input" << endl;
-      // std::cout << "\nInvalid input. Please try again.\n" << std::endl;
-      std::cin.clear(); // Clear error flags
-      std::cin.ignore(numeric_limits<streamsize>::max(), '\n');
+      // cout << "\nInvalid input. Please try again.\n" << endl;
+      cin.clear(); // Clear error flags
+      cin.ignore(numeric_limits<streamsize>::max(), '\n');
     }
   }
 }
+
 void printGameRules() {
   cout << endl << "eventuall, we'll add rules later\n" << endl;
 }
@@ -455,3 +369,66 @@ int getUserDifficulty() {
   }
   return difficulty;
 }
+
+int getInputX(int kCollums) {
+  bool validInput = false;
+  int userIn = -2;
+
+  while (!validInput) {
+
+    cout << "X (0-" << kCollums - 1 << "): ";
+    if (!(cin >> userIn)) {
+      cin.clear();
+      cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    } else if (userIn >= kCollums || userIn < -1) {
+      cin.clear();
+      cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    } else {
+      if (userIn == -1) {
+        exit(0);
+      }
+      validInput = true;
+    }
+  }
+  return userIn;
+}
+
+int getInputY(int kRows) {
+  bool validInput = false;
+  int userIn = -2;
+
+  while (!validInput) {
+    cout << "Y (0-" << kRows - 1 << "): ";
+    if (!(cin >> userIn)) {
+      cin.clear();
+      cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    } else if (userIn >= kRows || userIn < 0) {
+      cin.clear();
+      cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    } else {
+      validInput = true;
+    }
+  }
+
+  userIn = kRows - 1 - userIn;
+  return userIn;
+}
+
+void printRoundHeader(int round){
+
+  cout << WHITE << "_____________________________________\n" << endl;
+  cout << RED << "                ROUND " << round <<endl;
+  cout << WHITE << "_____________________________________\n" << RESET << endl;
+
+}
+  void printWin(){
+    cout << WHITE << "\n_____________________________________\n" << endl;
+    cout << RED << "               YOU WIN!" << endl;
+    cout << WHITE << "_____________________________________\n" << RESET << endl;
+  }
+  void printLose(){
+    cout << WHITE << "\n_____________________________________\n" << endl;
+    cout << RED << "               YOU LOSE!" << endl;
+    cout << WHITE << "_____________________________________\n" << RESET << endl;
+
+  }
