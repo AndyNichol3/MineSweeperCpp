@@ -23,39 +23,40 @@ using namespace std;
 void printGameWelcome();
 
 void fillWithMines(vector<vector<int>> &gameBoard, int userStartRow,
-                   int userStartCol, int maxNumOfMines, int kRows,
-                   int kCollums);
+                   int userStartCol, int maxNumOfMines, int maxNumberOfRows,
+                   int maxNumberOfColumns);
 void printGameBoardTesting(const vector<vector<int>> &gameBoard,
                            const vector<vector<bool>> &boolGameBoard);
-void fillWithInts(vector<vector<int>> &gameBoard, int kRows, int kCollums);
-void calcGameBoardInts(vector<vector<int>> &gameBoard, int x, int y, int kRows,
-                       int kCollums);
+void fillWithInts(vector<vector<int>> &gameBoard, int maxNumberOfRows, int maxNumberOfColumns);
+void calcGameBoardInts(vector<vector<int>> &gameBoard, int x, int y, int maxNumberOfRows,
+                       int maxNumberOfColumns);
 int printBoolBoard(const vector<vector<bool>> &boolGameBoard,
-                   const vector<vector<int>> &gameBoard, int kRows,
-                   int kCollums);
+                   const vector<vector<int>> &gameBoard, int maxNumberOfRows,
+                   int maxNumberOfColumns);
 void zeroGameBoard(vector<vector<int>> &gameBoard,
-                   vector<vector<bool>> &boolGameBoard, int kRows,
-                   int kCollums);
+                   vector<vector<bool>> &boolGameBoard, int maxNumberOfRows,
+                   int maxNumberOfColumns);
 void recursiveRevealExplosion(vector<vector<int>> &gameBoard,
                               vector<vector<bool>> &boolGameBoard, int X, int Y,
-                              int kRows, int kCollums);
+                              int maxNumberOfRows, int maxNumberOfColumns);
 void printGameRules();
 int getUserDifficulty();
-int getInputX(int kCollums);
-int getInputY(int kRows);
+int getInputX(int maxNumberOfColumns);
+int getInputY(int maxNumberOfRows);
 void printRoundHeader(int round);
 void printWin();
 void printLose();
 void initalizeGameBoard(vector<vector<bool>> &boolGameBoard,
-                        vector<vector<int>> &gameBoard, int kRows, int kCollums,
+                        vector<vector<int>> &gameBoard, int maxNumberOfRows, int maxNumberOfColumns,
                         int maxNumOfMines);
-bool playGame(int kCollums, int kRows, vector<vector<bool>> &boolGameBoard,
+bool playGame(int maxNumberOfColumns, int maxNumberOfRows, vector<vector<bool>> &boolGameBoard,
               vector<vector<int>> &gameBoard, int maxNumOfMines);
 
 int main() {
+  
 
   // define variable
-  int kRows = 0, kCollums = 0, maxNumOfMines = 0, displaySubtract = 0;
+  int maxNumberOfRows = 0, maxNumberOfColumns = 0, maxNumOfMines = 0, displaySubtract = 0;
   int round = 1;
 
   // print the game header,
@@ -69,39 +70,39 @@ int main() {
   // define some constasnts based on the difficulty
   switch (difficulty) {
   case 1: {
-    kRows = 9;
-    kCollums = 9;
+    maxNumberOfRows = 9;
+    maxNumberOfColumns = 9;
     maxNumOfMines = 10;
     break;
   }
   case 2: {
-    kRows = 16;
-    kCollums = 16;
+    maxNumberOfRows = 16;
+    maxNumberOfColumns = 16;
     maxNumOfMines = 40;
     break;
   }
   case 3: {
-    kRows = 16;
-    kCollums = 30;
+    maxNumberOfRows = 16;
+    maxNumberOfColumns = 30;
     maxNumOfMines = 99;
     break;
   }
   }
 
   // create the definition for some display variables
-  displaySubtract = kRows - 1;
+  displaySubtract = maxNumberOfRows - 1;
 
   // creates the game baords
   // one to hold the ints and one to hold the bools
-  vector<vector<int>> gameBoard(kRows, vector<int>(kCollums));
-  vector<vector<bool>> boolGameBoard(kRows, vector<bool>(kCollums));
+  vector<vector<int>> gameBoard(maxNumberOfRows, vector<int>(maxNumberOfColumns));
+  vector<vector<bool>> boolGameBoard(maxNumberOfRows, vector<bool>(maxNumberOfColumns));
 
   // handles all of the creation, and the round 1 of them game
   // since the game cannot be lost on round one and the variables
   // are not reused anywhere else
-  initalizeGameBoard(boolGameBoard, gameBoard, kRows, kCollums, maxNumOfMines);
+  initalizeGameBoard(boolGameBoard, gameBoard, maxNumberOfRows, maxNumberOfColumns, maxNumOfMines);
 
-  bool win = playGame(kCollums, kRows, boolGameBoard, gameBoard, maxNumOfMines);
+  bool win = playGame(maxNumberOfColumns, maxNumberOfRows, boolGameBoard, gameBoard, maxNumOfMines);
 
   if (win == true) {
     printWin();
@@ -112,16 +113,16 @@ int main() {
 }
 
 int printBoolBoard(const vector<vector<bool>> &boolGameBoard,
-                   const vector<vector<int>> &gameBoard, int kRows,
-                   int kCollums) {
+                   const vector<vector<int>> &gameBoard, int maxNumberOfRows,
+                   int maxNumberOfColumns) {
   int revealTally = 0;
 
   cout << endl;
   cout << RED << "   +----------------------------+" << endl;
 
-  for (int i = 0; i < kRows; ++i) {
-    cout << RED << setw(2) << kRows - 1 - i << " |";
-    for (int j = 0; j < kCollums; ++j) {
+  for (int i = 0; i < maxNumberOfRows; ++i) {
+    cout << RED << setw(2) << maxNumberOfRows - 1 - i << " |";
+    for (int j = 0; j < maxNumberOfColumns; ++j) {
       if (boolGameBoard[i][j]) {
         revealTally++;
         switch (gameBoard[i][j]) {
@@ -150,7 +151,7 @@ int printBoolBoard(const vector<vector<bool>> &boolGameBoard,
 
   cout << RED << "   +----------------------------+" << RESET << endl;
   cout << RED << "    ";
-  for (int i = 0; i < kCollums; ++i) {
+  for (int i = 0; i < maxNumberOfColumns; ++i) {
     cout << RED << setw(3) << i;
   }
   cout << endl;
@@ -171,8 +172,8 @@ void printGameBoardTesting(const vector<vector<int>> &gameBoard,
 }
 
 void fillWithMines(vector<vector<int>> &gameBoard, int userStartRow,
-                   int userStartCol, int maxNumOfMines, int kRows,
-                   int kCollums) {
+                   int userStartCol, int maxNumOfMines, int maxNumberOfRows,
+                   int maxNumberOfColumns) {
   int numOfMines = 0;
 
   srand(time(NULL));
@@ -180,8 +181,8 @@ void fillWithMines(vector<vector<int>> &gameBoard, int userStartRow,
 
   while (numOfMines <= maxNumOfMines) {
     bool check = true;
-    randX = rand() % (kRows - 1);
-    randY = rand() % (kCollums - 1);
+    randX = rand() % (maxNumberOfRows - 1);
+    randY = rand() % (maxNumberOfColumns - 1);
 
     int defIndexX[9] = {-1, -1, -1, 0, 0, 0, 1, 1, 1};
     int defIndexY[9] = {-1, 0, 1, -1, 0, 1, -1, 0, 1};
@@ -201,7 +202,7 @@ void fillWithMines(vector<vector<int>> &gameBoard, int userStartRow,
       gameBoard[randX][randY] = -1;
       numOfMines++;
 
-      // randX = kRows - 1 - randX;
+      // randX = maxNumberOfRows - 1 - randX;
       // cout << randY << " " << randX << endl;
 
       if (numOfMines == maxNumOfMines) {
@@ -212,19 +213,19 @@ void fillWithMines(vector<vector<int>> &gameBoard, int userStartRow,
 }
 
 void zeroGameBoard(vector<vector<int>> &gameBoard,
-                   vector<vector<bool>> &boolGameBoard, int kRows,
-                   int kCollums) {
+                   vector<vector<bool>> &boolGameBoard, int maxNumberOfRows,
+                   int maxNumberOfColumns) {
 
-  for (int i = 0; i < kRows; i++) {
-    for (int j = 0; j < kCollums; j++) {
+  for (int i = 0; i < maxNumberOfRows; i++) {
+    for (int j = 0; j < maxNumberOfColumns; j++) {
       gameBoard[i][j] = 0;
       boolGameBoard[i][j] = false;
     }
   }
 }
 
-void calcGameBoardInts(vector<vector<int>> &gameBoard, int x, int y, int kRows,
-                       int kCollums) {
+void calcGameBoardInts(vector<vector<int>> &gameBoard, int x, int y, int maxNumberOfRows,
+                       int maxNumberOfColumns) {
   int defIndexX[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
   int defIndexY[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
 
@@ -232,8 +233,8 @@ void calcGameBoardInts(vector<vector<int>> &gameBoard, int x, int y, int kRows,
     int updateRow = x + defIndexX[i];
     int updateCol = y + defIndexY[i];
 
-    if (updateRow >= 0 && updateRow < kRows && updateCol >= 0 &&
-        updateCol < kCollums) {
+    if (updateRow >= 0 && updateRow < maxNumberOfRows && updateCol >= 0 &&
+        updateCol < maxNumberOfColumns) {
       if (gameBoard[updateRow][updateCol] != -1) {
         gameBoard[updateRow][updateCol]++;
       }
@@ -241,12 +242,12 @@ void calcGameBoardInts(vector<vector<int>> &gameBoard, int x, int y, int kRows,
   }
 }
 
-void fillWithInts(vector<vector<int>> &gameBoard, int kRows, int kCollums) {
-  for (int i = 0; i < kRows; i++) {
-    for (int j = 0; j < kCollums; j++) {
+void fillWithInts(vector<vector<int>> &gameBoard, int maxNumberOfRows, int maxNumberOfColumns) {
+  for (int i = 0; i < maxNumberOfRows; i++) {
+    for (int j = 0; j < maxNumberOfColumns; j++) {
       if (gameBoard[i][j] == -1) {
         // cout << "flag 2" << endl;
-        calcGameBoardInts(gameBoard, i, j, kRows, kCollums);
+        calcGameBoardInts(gameBoard, i, j, maxNumberOfRows, maxNumberOfColumns);
       }
     }
   }
@@ -254,7 +255,7 @@ void fillWithInts(vector<vector<int>> &gameBoard, int kRows, int kCollums) {
 
 void recursiveRevealExplosion(vector<vector<int>> &gameBoard,
                               vector<vector<bool>> &boolGameBoard, int X, int Y,
-                              int kRows, int kCollums) {
+                              int maxNumberOfRows, int maxNumberOfColumns) {
   int defIndexX[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
   int defIndexY[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
 
@@ -263,12 +264,12 @@ void recursiveRevealExplosion(vector<vector<int>> &gameBoard,
     int updateRow = X + defIndexX[i];
     int updateCol = Y + defIndexY[i];
 
-    if (updateRow >= 0 && updateRow < kRows && updateCol >= 0 &&
-        updateCol < kCollums && !boolGameBoard[updateRow][updateCol]) {
+    if (updateRow >= 0 && updateRow < maxNumberOfRows && updateCol >= 0 &&
+        updateCol < maxNumberOfColumns && !boolGameBoard[updateRow][updateCol]) {
       boolGameBoard[updateRow][updateCol] = true;
       if (gameBoard[updateRow][updateCol] == 0) {
         recursiveRevealExplosion(gameBoard, boolGameBoard, updateRow, updateCol,
-                                 kRows, kCollums);
+                                 maxNumberOfRows, maxNumberOfColumns);
       }
     }
   }
@@ -320,17 +321,20 @@ int getUserDifficulty() {
   return difficulty;
 }
 
-int getInputX(int kCollums) {
+int getInputX(int maxNumberOfColumns) {
   bool validInput = false;
   int userIn = -2;
 
   while (!validInput) {
 
-    cout << "X (0-" << kCollums - 1 << "): ";
+    cout << "X (0-" << maxNumberOfColumns - 1 << "): ";
     if (!(cin >> userIn)) {
+      cout << "Invalid input. Please enter a number." << endl;
       cin.clear();
       cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    } else if (userIn >= kCollums || userIn < -1) {
+    } else if (userIn >= maxNumberOfColumns || userIn < -1) {
+      cout << "Input out of range. Please enter a number in range 0-"
+           << maxNumberOfColumns - 1 << endl;
       cin.clear();
       cin.ignore(numeric_limits<streamsize>::max(), '\n');
     } else {
@@ -343,16 +347,19 @@ int getInputX(int kCollums) {
   return userIn;
 }
 
-int getInputY(int kRows) {
+int getInputY(int maxNumberOfRows) {
   bool validInput = false;
   int userIn = -2;
 
   while (!validInput) {
-    cout << "Y (0-" << kRows - 1 << "): ";
+    cout << "Y (0-" << maxNumberOfRows - 1 << "): ";
     if (!(cin >> userIn)) {
+      cout << "Invalid input. Please enter a number." << endl;
       cin.clear();
       cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    } else if (userIn >= kRows || userIn < 0) {
+    } else if (userIn >= maxNumberOfRows || userIn < 0) {
+      cout << "Input out of range. Please enter a number in range 0-"
+           << maxNumberOfRows - 1 << endl;
       cin.clear();
       cin.ignore(numeric_limits<streamsize>::max(), '\n');
     } else {
@@ -360,7 +367,7 @@ int getInputY(int kRows) {
     }
   }
 
-  userIn = kRows - 1 - userIn;
+  userIn = maxNumberOfRows - 1 - userIn;
   return userIn;
 }
 
@@ -382,36 +389,36 @@ void printLose() {
 }
 
 void initalizeGameBoard(vector<vector<bool>> &boolGameBoard,
-                        vector<vector<int>> &gameBoard, int kRows, int kCollums,
+                        vector<vector<int>> &gameBoard, int maxNumberOfRows, int maxNumberOfColumns,
                         int maxNumOfMines) {
 
-  zeroGameBoard(gameBoard, boolGameBoard, kRows, kCollums);
-  printBoolBoard(boolGameBoard, gameBoard, kRows, kCollums);
+  zeroGameBoard(gameBoard, boolGameBoard, maxNumberOfRows, maxNumberOfColumns);
+  printBoolBoard(boolGameBoard, gameBoard, maxNumberOfRows, maxNumberOfColumns);
 
   printRoundHeader(1);
 
   cout << "Enter Starting Point (-1 to exit): " << endl;
-  int userStartCol = getInputX(kCollums);
-  int userStartRow = getInputY(kRows);
+  int userStartCol = getInputX(maxNumberOfColumns);
+  int userStartRow = getInputY(maxNumberOfRows);
 
   cout << endl;
 
   boolGameBoard[userStartRow][userStartCol] = true;
 
-  fillWithMines(gameBoard, userStartRow, userStartCol, maxNumOfMines, kRows,
-                kCollums);
-  fillWithInts(gameBoard, kRows, kCollums);
+  fillWithMines(gameBoard, userStartRow, userStartCol, maxNumOfMines, maxNumberOfRows,
+                maxNumberOfColumns);
+  fillWithInts(gameBoard, maxNumberOfRows, maxNumberOfColumns);
   recursiveRevealExplosion(gameBoard, boolGameBoard, userStartRow, userStartCol,
-                           kRows, kCollums);
-  printBoolBoard(boolGameBoard, gameBoard, kRows, kCollums);
+                           maxNumberOfRows, maxNumberOfColumns);
+  printBoolBoard(boolGameBoard, gameBoard, maxNumberOfRows, maxNumberOfColumns);
 }
 
-bool playGame(int kCollums, int kRows, vector<vector<bool>> &boolGameBoard,
+bool playGame(int maxNumberOfColumns, int maxNumberOfRows, vector<vector<bool>> &boolGameBoard,
               vector<vector<int>> &gameBoard, int maxNumOfMines) {
 
   bool gameOver = false, win = false;
   int round = 1, revealTally = 0;
-  int maxDisplay = kRows * kCollums;
+  int maxDisplay = maxNumberOfRows * maxNumberOfColumns;
   while (gameOver == false) {
 
     round++;
@@ -424,8 +431,8 @@ bool playGame(int kCollums, int kRows, vector<vector<bool>> &boolGameBoard,
     while (!revealedTile) {
 
       cout << "Enter Next Point (-1 to exit): " << endl;
-      userCol = getInputX(kCollums);
-      userRow = getInputY(kRows);
+      userCol = getInputX(maxNumberOfColumns);
+      userRow = getInputY(maxNumberOfRows);
 
       if (boolGameBoard[userRow][userCol] == true) {
         cout << "You have already revealed this tile!\n" << endl;
@@ -444,11 +451,11 @@ bool playGame(int kCollums, int kRows, vector<vector<bool>> &boolGameBoard,
       boolGameBoard[userRow][userCol] = true;
       if (gameBoard[userRow][userCol] == 0) {
         recursiveRevealExplosion(gameBoard, boolGameBoard, userRow, userCol,
-                                 kRows, kCollums);
+                                 maxNumberOfRows, maxNumberOfColumns);
       }
     }
 
-    revealTally = printBoolBoard(boolGameBoard, gameBoard, kRows, kCollums);
+    revealTally = printBoolBoard(boolGameBoard, gameBoard, maxNumberOfRows, maxNumberOfColumns);
 
     if (revealTally == (maxDisplay - maxNumOfMines)) {
       gameOver = true;
