@@ -1,6 +1,11 @@
 // minesweeper
 
-// fix row, collum issue
+// fix the boundaries for difficulty level
+// comment and documentation
+// fix variable naming
+// remove redunancy
+// split into many files studio.h
+
 
 // headers
 #include <cmath>
@@ -53,7 +58,7 @@ bool playGame(int maxNumberOfColumns, int maxNumberOfRows, vector<vector<bool>> 
               vector<vector<int>> &gameBoard, int maxNumOfMines);
 
 int main() {
-  
+
 
   // define variable
   int maxNumberOfRows = 0, maxNumberOfColumns = 0, maxNumOfMines = 0, displaySubtract = 0;
