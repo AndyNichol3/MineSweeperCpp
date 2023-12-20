@@ -37,9 +37,7 @@ void calcGameBoardInts(vector<vector<int>> &gameBoard, int x, int y, int maxNumb
 int printBoolBoard(const vector<vector<bool>> &boolGameBoard,
                    const vector<vector<int>> &gameBoard, int maxNumberOfRows,
                    int maxNumberOfColumns);
-void zeroGameBoard(vector<vector<int>> &gameBoard,
-                   vector<vector<bool>> &boolGameBoard, int maxNumberOfRows,
-                   int maxNumberOfColumns);
+
 void recursiveRevealExplosion(vector<vector<int>> &gameBoard,
                               vector<vector<bool>> &boolGameBoard, int X, int Y,
                               int maxNumberOfRows, int maxNumberOfColumns);
@@ -98,8 +96,8 @@ int main() {
 
   // creates the game baords
   // one to hold the ints and one to hold the bools
-  vector<vector<int>> gameBoard(maxNumberOfRows, vector<int>(maxNumberOfColumns));
-  vector<vector<bool>> boolGameBoard(maxNumberOfRows, vector<bool>(maxNumberOfColumns));
+  vector<vector<int>> gameBoard(maxNumberOfRows, vector<int>(maxNumberOfColumns, 0));
+  vector<vector<bool>> boolGameBoard(maxNumberOfRows, vector<bool>(maxNumberOfColumns, false));
 
   // handles all of the creation, and the round 1 of them game
   // since the game cannot be lost on round one and the variables
@@ -206,17 +204,6 @@ void fillWithMines(vector<vector<int>> &gameBoard, int userStartRow,
   }
 }
 
-void zeroGameBoard(vector<vector<int>> &gameBoard,
-                   vector<vector<bool>> &boolGameBoard, int maxNumberOfRows,
-                   int maxNumberOfColumns) {
-
-  for (int i = 0; i < maxNumberOfRows; i++) {
-    for (int j = 0; j < maxNumberOfColumns; j++) {
-      gameBoard[i][j] = 0;
-      boolGameBoard[i][j] = false;
-    }
-  }
-}
 
 void calcGameBoardInts(vector<vector<int>> &gameBoard, int x, int y, int maxNumberOfRows,
                        int maxNumberOfColumns) {
@@ -386,7 +373,7 @@ void initalizeGameBoard(vector<vector<bool>> &boolGameBoard,
                         vector<vector<int>> &gameBoard, int maxNumberOfRows, int maxNumberOfColumns,
                         int maxNumOfMines) {
 
-  zeroGameBoard(gameBoard, boolGameBoard, maxNumberOfRows, maxNumberOfColumns);
+
   printBoolBoard(boolGameBoard, gameBoard, maxNumberOfRows, maxNumberOfColumns);
 
   printRoundHeader(1);
