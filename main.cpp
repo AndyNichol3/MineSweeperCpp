@@ -30,8 +30,7 @@ void printGameWelcome();
 void fillWithMines(vector<vector<int>> &gameBoard, int userStartRow,
                    int userStartCol, int maxNumOfMines, int maxNumberOfRows,
                    int maxNumberOfColumns);
-void printGameBoardTesting(const vector<vector<int>> &gameBoard,
-                           const vector<vector<bool>> &boolGameBoard);
+
 void fillWithInts(vector<vector<int>> &gameBoard, int maxNumberOfRows, int maxNumberOfColumns);
 void calcGameBoardInts(vector<vector<int>> &gameBoard, int x, int y, int maxNumberOfRows,
                        int maxNumberOfColumns);
@@ -164,17 +163,7 @@ int printBoolBoard(const vector<vector<bool>> &boolGameBoard,
   return revealTally;
 }
 
-void printGameBoardTesting(const vector<vector<int>> &gameBoard,
-                           const vector<vector<bool>> &boolGameBoard) {
 
-  cout << right;
-  for (int i = 0; i < 9; i++) {
-    for (int j = 0; j < 9; j++) {
-      cout << setw(3) << gameBoard[i][j];
-    }
-    cout << endl;
-  }
-}
 
 void fillWithMines(vector<vector<int>> &gameBoard, int userStartRow,
                    int userStartCol, int maxNumOfMines, int maxNumberOfRows,
