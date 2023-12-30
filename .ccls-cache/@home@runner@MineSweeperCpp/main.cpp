@@ -5,9 +5,7 @@
 // comment and documentation
 // fix variable naming
 // remove redunancy
-// split into many files studio.h
 
-//#include "GAME_SETUP.h"
 #include "PLAY_GAME.h"
 #include <vector>
 
