@@ -2,10 +2,6 @@
 
 // g++ main.cpp PLAY_GAME.cpp
 
-// comment and documentation
-// fix variable naming
-// remove redunancy
-
 #include "PLAY_GAME.h"
 #include <vector>
 

@@ -5,71 +5,17 @@
 #include <iostream>
 #include <limits>
 #include <vector>
+
 using namespace std;
+
+// custom color codes
 #define RESET "\033[0m"
 #define RED "\033[0;31m"
 #define GREEN "\e[0;36m"
 #define BLUE "\033[34m"
 #define WHITE "\033[37m"
 
-int printBoolBoard(const vector<vector<bool>> &boolGameBoard,
-                   const vector<vector<int>> &gameBoard, int maxNumberOfRows,
-                   int maxNumberOfColumns) {
-  int revealTally = 0;
-
-  // code to print border for displayed game board
-  cout << endl << RED << "   +";
-  for (int i = 0; i < maxNumberOfColumns; i++) {
-    cout << "---";
-  }
-  cout << "-+" << endl;
-
-  for (int i = 0; i < maxNumberOfRows; ++i) {
-    cout << RED << setw(2) << maxNumberOfRows - 1 - i << " |";
-    for (int j = 0; j < maxNumberOfColumns; ++j) {
-      if (boolGameBoard[i][j]) {
-        revealTally++;
-        switch (gameBoard[i][j]) {
-        case 0:
-          cout << WHITE << setw(3) << gameBoard[i][j];
-          break;
-        case 1:
-          cout << BLUE << setw(3) << gameBoard[i][j];
-          break;
-        case 2:
-          cout << GREEN << setw(3) << gameBoard[i][j];
-          break;
-        case 3:
-          cout << RED << setw(3) << gameBoard[i][j];
-          break;
-        default:
-          cout << RED << setw(3) << gameBoard[i][j];
-          break;
-        }
-      } else {
-        cout << WHITE << setw(3) << "-";
-      }
-    }
-    cout << RED << " |" << endl;
-  }
-
-  // code to print border for displayed game board
-  cout << RED << "   +";
-  for (int i = 0; i < maxNumberOfColumns; i++) {
-    cout << "---";
-  }
-  cout << "-+" << endl;
-
-  cout << RED << "    ";
-
-  for (int i = 0; i < maxNumberOfColumns; ++i) {
-    cout << RED << setw(3) << i;
-  }
-  cout << endl << endl;
-
-  return revealTally;
-}
-
+// game play functions
 void recursiveRevealExplosion(vector<vector<int>> &gameBoard,
                               vector<vector<bool>> &boolGameBoard, int X, int Y,
                               int maxNumberOfRows, int maxNumberOfColumns) {
@@ -92,75 +38,6 @@ void recursiveRevealExplosion(vector<vector<int>> &gameBoard,
     }
   }
 }
-
-int getInputX(int maxNumberOfColumns) {
-  bool validInput = false;
-  int userIn = -2;
-
-  while (!validInput) {
-
-    cout << "X (0-" << maxNumberOfColumns - 1 << "): ";
-    if (!(cin >> userIn)) {
-      cout << "Invalid input. Please enter a number." << endl;
-      cin.clear();
-      cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    } else if (userIn >= maxNumberOfColumns || userIn < -1) {
-      cout << "Input out of range. Please enter a number in range 0-"
-           << maxNumberOfColumns - 1 << endl;
-      cin.clear();
-      cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    } else {
-      if (userIn == -1) {
-        exit(0);
-      }
-      validInput = true;
-    }
-  }
-  return userIn;
-}
-
-int getInputY(int maxNumberOfRows) {
-  bool validInput = false;
-  int userIn = -2;
-
-  while (!validInput) {
-    cout << "Y (0-" << maxNumberOfRows - 1 << "): ";
-    if (!(cin >> userIn)) {
-      cout << "Invalid input. Please enter a number." << endl;
-      cin.clear();
-      cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    } else if (userIn >= maxNumberOfRows || userIn < 0) {
-      cout << "Input out of range. Please enter a number in range 0-"
-           << maxNumberOfRows - 1 << endl;
-      cin.clear();
-      cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    } else {
-      validInput = true;
-    }
-  }
-
-  userIn = maxNumberOfRows - 1 - userIn;
-  return userIn;
-}
-
-void printRoundHeader(int round) {
-
-  cout << WHITE << "_____________________________________\n" << endl;
-  cout << RED << "                ROUND " << round << endl;
-  cout << WHITE << "_____________________________________\n" << RESET << endl;
-}
-void printWin() {
-  cout << WHITE << "\n_____________________________________\n" << endl;
-  cout << RED << "               YOU WIN!" << endl;
-  cout << WHITE << "_____________________________________\n" << RESET << endl;
-}
-void printLose() {
-  cout << WHITE << "\n_____________________________________\n" << endl;
-  cout << RED << "               YOU LOSE!" << endl;
-  cout << WHITE << "_____________________________________\n" << RESET << endl;
-}
-
-// iniatlize game board
 
 bool playGame(int maxNumberOfColumns, int maxNumberOfRows,
               vector<vector<bool>> &boolGameBoard,
@@ -217,54 +94,7 @@ bool playGame(int maxNumberOfColumns, int maxNumberOfRows,
   return win;
 }
 
-//
-
-void printGameRules() {
-  cout << endl << "eventuall, we'll add rules later\n" << endl;
-}
-
-int getUserDifficulty() {
-  int difficulty = 0;
-  while (difficulty != 1 && difficulty != 2 && difficulty != 3) {
-    cin.clear();
-    cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    cout << endl;
-    cout << "Chose Your Difficulty: " << endl;
-    cout << "1. Easy    2. Medium    3. Hard" << endl;
-    cin >> difficulty;
-  }
-  return difficulty;
-}
-
-void printGameWelcome() {
-  cout << RED << "\n\n-------------------------------------" << endl;
-  cout << WHITE << "       Welcome to Minesweeper!       " << endl;
-  cout << RED << "-------------------------------------\n" << RESET << endl;
-  bool startGame = false;
-  while (startGame == false) {
-
-    cout << "Press 1 For Rules or 2 To Start: " << endl;
-    int userStartGame = 0;
-    cin >> userStartGame;
-    if (userStartGame == 1) {
-      // add actual rules later
-      cout << "Here are the Rules " << endl;
-      printGameRules();
-    } else if (userStartGame == 2) {
-
-      cout << "Here we go! \n" << endl;
-      // cout << "-------------------------------------\n" << endl;
-      startGame = true;
-      break;
-    } else {
-      //  cout << "invalid input" << endl;
-      // cout << "\nInvalid input. Please try again.\n" << endl;
-      cin.clear(); // Clear error flags
-      cin.ignore(numeric_limits<streamsize>::max(), '\n');
-    }
-  }
-}
-
+// initilization functions
 void fillWithMines(vector<vector<int>> &gameBoard, int userStartRow,
                    int userStartCol, int maxNumOfMines, int maxNumberOfRows,
                    int maxNumberOfColumns) {
@@ -359,4 +189,175 @@ void initalizeGameBoard(vector<vector<bool>> &boolGameBoard,
   recursiveRevealExplosion(gameBoard, boolGameBoard, userStartRow, userStartCol,
                            maxNumberOfRows, maxNumberOfColumns);
   printBoolBoard(boolGameBoard, gameBoard, maxNumberOfRows, maxNumberOfColumns);
+}
+
+// user input functions
+int getInputX(int maxNumberOfColumns) {
+  bool validInput = false;
+  int userIn = -2;
+
+  while (!validInput) {
+
+    cout << "X (0-" << maxNumberOfColumns - 1 << "): ";
+    if (!(cin >> userIn)) {
+      cout << "Invalid input. Please enter a number." << endl;
+      cin.clear();
+      cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    } else if (userIn >= maxNumberOfColumns || userIn < -1) {
+      cout << "Input out of range. Please enter a number in range 0-"
+           << maxNumberOfColumns - 1 << endl;
+      cin.clear();
+      cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    } else {
+      if (userIn == -1) {
+        exit(0);
+      }
+      validInput = true;
+    }
+  }
+  return userIn;
+}
+
+int getInputY(int maxNumberOfRows) {
+  bool validInput = false;
+  int userIn = -2;
+
+  while (!validInput) {
+    cout << "Y (0-" << maxNumberOfRows - 1 << "): ";
+    if (!(cin >> userIn)) {
+      cout << "Invalid input. Please enter a number." << endl;
+      cin.clear();
+      cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    } else if (userIn >= maxNumberOfRows || userIn < 0) {
+      cout << "Input out of range. Please enter a number in range 0-"
+           << maxNumberOfRows - 1 << endl;
+      cin.clear();
+      cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    } else {
+      validInput = true;
+    }
+  }
+
+  userIn = maxNumberOfRows - 1 - userIn;
+  return userIn;
+}
+
+int getUserDifficulty() {
+  int difficulty = 0;
+  while (difficulty != 1 && difficulty != 2 && difficulty != 3) {
+    cin.clear();
+    cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    cout << endl;
+    cout << "Chose Your Difficulty: " << endl;
+    cout << "1. Easy    2. Medium    3. Hard" << endl;
+    cin >> difficulty;
+  }
+  return difficulty;
+}
+
+// printing functions
+
+int printBoolBoard(const vector<vector<bool>> &boolGameBoard,
+                   const vector<vector<int>> &gameBoard, int maxNumberOfRows,
+                   int maxNumberOfColumns) {
+  int revealTally = 0;
+
+  // code to print border for displayed game board
+  cout << endl << RED << "   +";
+  for (int i = 0; i < maxNumberOfColumns; i++) {
+    cout << "---";
+  }
+  cout << "-+" << endl;
+
+  for (int i = 0; i < maxNumberOfRows; ++i) {
+    cout << RED << setw(2) << maxNumberOfRows - 1 - i << " |";
+    for (int j = 0; j < maxNumberOfColumns; ++j) {
+      if (boolGameBoard[i][j]) {
+        revealTally++;
+        switch (gameBoard[i][j]) {
+        case 0:
+          cout << WHITE << setw(3) << gameBoard[i][j];
+          break;
+        case 1:
+          cout << BLUE << setw(3) << gameBoard[i][j];
+          break;
+        case 2:
+          cout << GREEN << setw(3) << gameBoard[i][j];
+          break;
+        case 3:
+          cout << RED << setw(3) << gameBoard[i][j];
+          break;
+        default:
+          cout << RED << setw(3) << gameBoard[i][j];
+          break;
+        }
+      } else {
+        cout << WHITE << setw(3) << "-";
+      }
+    }
+    cout << RED << " |" << endl;
+  }
+
+  // code to print border for displayed game board
+  cout << RED << "   +";
+  for (int i = 0; i < maxNumberOfColumns; i++) {
+    cout << "---";
+  }
+  cout << "-+" << endl;
+
+  cout << RED << "    ";
+
+  for (int i = 0; i < maxNumberOfColumns; ++i) {
+    cout << RED << setw(3) << i;
+  }
+  cout << endl << endl;
+
+  return revealTally;
+}
+void printGameWelcome() {
+  cout << RED << "\n\n-------------------------------------" << endl;
+  cout << WHITE << "       Welcome to Minesweeper!       " << endl;
+  cout << RED << "-------------------------------------\n" << RESET << endl;
+  bool startGame = false;
+  while (startGame == false) {
+
+    cout << "Press 1 For Rules or 2 To Start: " << endl;
+    int userStartGame = 0;
+    cin >> userStartGame;
+    if (userStartGame == 1) {
+      // add actual rules later
+      cout << "Here are the Rules " << endl;
+      printGameRules();
+    } else if (userStartGame == 2) {
+
+      cout << "Here we go! \n" << endl;
+      // cout << "-------------------------------------\n" << endl;
+      startGame = true;
+      break;
+    } else {
+      //  cout << "invalid input" << endl;
+      // cout << "\nInvalid input. Please try again.\n" << endl;
+      cin.clear(); // Clear error flags
+      cin.ignore(numeric_limits<streamsize>::max(), '\n');
+    }
+  }
+}
+void printGameRules() {
+  cout << endl << "eventuall, we'll add rules later\n" << endl;
+}
+void printRoundHeader(int round) {
+
+  cout << WHITE << "_____________________________________\n" << endl;
+  cout << RED << "                ROUND " << round << endl;
+  cout << WHITE << "_____________________________________\n" << RESET << endl;
+}
+void printWin() {
+  cout << WHITE << "\n_____________________________________\n" << endl;
+  cout << RED << "               YOU WIN!" << endl;
+  cout << WHITE << "_____________________________________\n" << RESET << endl;
+}
+void printLose() {
+  cout << WHITE << "\n_____________________________________\n" << endl;
+  cout << RED << "               YOU LOSE!" << endl;
+  cout << WHITE << "_____________________________________\n" << RESET << endl;
 }
