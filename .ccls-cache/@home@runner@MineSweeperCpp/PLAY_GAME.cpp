@@ -19,6 +19,7 @@ using namespace std;
 void recursiveRevealExplosion(vector<vector<int>> &gameBoard,
                               vector<vector<bool>> &boolGameBoard, int X, int Y,
                               int maxNumberOfRows, int maxNumberOfColumns) {
+  // indicies of 8 imediate sorrunding tiles
   int defIndexX[8] = {-1, -1, -1, 0, 0, 1, 1, 1};
   int defIndexY[8] = {-1, 0, 1, -1, 1, -1, 0, 1};
 
@@ -31,6 +32,7 @@ void recursiveRevealExplosion(vector<vector<int>> &gameBoard,
         updateCol < maxNumberOfColumns &&
         !boolGameBoard[updateRow][updateCol]) {
       boolGameBoard[updateRow][updateCol] = true;
+      // if the tile is 0, do the reveal
       if (gameBoard[updateRow][updateCol] == 0) {
         recursiveRevealExplosion(gameBoard, boolGameBoard, updateRow, updateCol,
                                  maxNumberOfRows, maxNumberOfColumns);
@@ -42,6 +44,8 @@ void recursiveRevealExplosion(vector<vector<int>> &gameBoard,
 bool playGame(int maxNumberOfColumns, int maxNumberOfRows,
               vector<vector<bool>> &boolGameBoard,
               vector<vector<int>> &gameBoard, int maxNumOfMines) {
+
+  // main game function after initilization
 
   bool gameOver = false, win = false;
   int round = 1, revealTally = 0;
@@ -127,9 +131,6 @@ void fillWithMines(vector<vector<int>> &gameBoard, int userStartRow,
       gameBoard[randX][randY] = -1;
       numOfMines++;
 
-      // randX = maxNumberOfRows - 1 - randX;
-      // cout << randY << " " << randX << endl;
-
       if (numOfMines == maxNumOfMines) {
         break;
       }
@@ -170,7 +171,7 @@ void fillWithInts(vector<vector<int>> &gameBoard, int maxNumberOfRows,
 void initalizeGameBoard(vector<vector<bool>> &boolGameBoard,
                         vector<vector<int>> &gameBoard, int maxNumberOfRows,
                         int maxNumberOfColumns, int maxNumOfMines) {
-
+  // main initialization function that calls lots of other functions
   printBoolBoard(boolGameBoard, gameBoard, maxNumberOfRows, maxNumberOfColumns);
 
   printRoundHeader(1);
@@ -343,7 +344,14 @@ void printGameWelcome() {
   }
 }
 void printGameRules() {
-  cout << endl << "eventuall, we'll add rules later\n" << endl;
+
+  cout << endl
+       << "Objective: Uncover all cells without detonating a mine." << endl;
+  cout << "Game Board: Grid of hidden cells." << endl;
+  cout << "Mines: Some cells contain mines." << endl;
+  cout << "Numbers: Cells show adjacent mine count." << endl;
+  cout << "Play: Select cells to reveal; avoid mines." << endl;
+  cout << "Winning: Uncover all safe cells to win." << endl << endl;
 }
 void printRoundHeader(int round) {
 
