@@ -1,10 +1,10 @@
-# Minesweeper Console Game
+# Minesweeper Terminal Game
 
-This  is a console-based Minesweeper game in C++.
+This  is a terminal-based Minesweeper game in C++.
 
 ## Overview
 
-This Minesweeper game is a basic console-based version of the timeless classic.
+This Minesweeper game is a basic terminal-based version of the timeless classic.
 
 ### Features
 
