@@ -32,6 +32,12 @@ This Minesweeper game is a basic terminal-based version of the timeless classic.
 
 Compile the code and run the executable in the console to start playing Minesweeper.
 
+## What it looks like
+
+This is what a won game looks like after comepletion:
+
+<img src="https://github.com/AndyNichol3/MineSweeperCpp/blob/main/userWin.png" alt="completed game" width="400" height="400">
+
 ## Future Development
 
 Future enhancements might include:
