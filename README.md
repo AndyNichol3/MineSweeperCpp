@@ -41,3 +41,9 @@ Future enhancements might include:
 - Graphical user interface (GUI) implementation for a more immersive experience.
 
 Feel free to contribute or suggest improvements!
+
+## Lets Get In Touch
+
+If you would like to reachout to suggest ideas, bug fixes, or connect, reach out to me here: 
+[LinkedIn](https://www.linkedin.com/in/connectandrewnicholson) or [Email](mailto:andrewtodnicholson@gmail.com)
+
